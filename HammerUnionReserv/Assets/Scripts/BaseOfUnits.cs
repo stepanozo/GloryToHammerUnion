@@ -13,7 +13,7 @@ public class BaseOfUnits : MonoBehaviour
 
     [SerializeField] Scrollbar reservScrollbar;
     [SerializeField] GameObject rezervPanel;
-    
+
 
 
     [SerializeField] internal static GameMainScript GameSC; //Это один-единственный экземпляр объекта "Скрипт игры", на котором всё висит что нужно для игры
@@ -26,16 +26,17 @@ public class BaseOfUnits : MonoBehaviour
     private void Start()
     {
 
-        
+
         GameSC = GameObject.Find("GameplaySystem").GetComponent<GameMainScript>(); //мб это надо удалить, всё как-то и без него работает
 
         //Здесь добавить юнита попробуем
-        AddUnitReserv(new unit(name: "Солдат СКСМ", damage: 4, hP: 3, techDamage: 4, spritePath: "Спрайты\\Illustrations\\Солдаты СКСМ", description: "ASD", quantity: 20));
-        AddUnitReserv(new unit(name: "БТР", damage: 10, hP: 50, techDamage: 10, spritePath: "Спрайты\\Illustrations\\БТР колонна", description: "ASD", quantity: 1));
-        AddUnitReserv(new unit(name: "Солдат СКСМ", damage: 4, hP: 3, techDamage: 4, spritePath: "Спрайты\\Illustrations\\Солдаты СКСМ", description: "ASD", quantity: 15));
-        AddUnitReserv(new unit(name: "БТР", damage: 10, hP: 50, techDamage: 10, spritePath: "Спрайты\\Illustrations\\БТР колонна", description: "ASD", quantity: 1));
-        AddUnitReserv(new unit(name: "БТР", damage: 10, hP: 35, techDamage: 10, spritePath: "Спрайты\\Illustrations\\БТР колонна", description: "ASD", quantity: 1));
-        AddUnitReserv(new unit(name: "Солдат СКСМ", damage: 4, hP: 1, techDamage: 4, spritePath: "Спрайты\\Illustrations\\Солдаты СКСМ", description: "ASD", quantity: 12));
+        AddUnitReserv(new unit(name: "Солдат СКСМ", damage: 4, hP: 3, maxHP: 3, techDamage: 4, spritePath: "Спрайты\\Illustrations\\Солдаты СКСМ", description: "ASD", quantity: 2));
+        AddUnitReserv(new unit(name: "БТР", damage: 10, hP: 50, maxHP: 50, techDamage: 10, spritePath: "Спрайты\\Illustrations\\БТР колонна", description: "ASD", quantity: 1));
+        AddUnitReserv(new unit(name: "Солдат СКСМ", damage: 4, hP: 3, maxHP: 3, techDamage: 4, spritePath: "Спрайты\\Illustrations\\Солдаты СКСМ", description: "ASD", quantity: 2));
+        AddUnitReserv(new unit(name: "БТР", damage: 10, hP: 50, maxHP: 50, techDamage: 10, spritePath: "Спрайты\\Illustrations\\БТР колонна", description: "ASD", quantity: 1));
+        AddUnitReserv(new unit(name: "БТР", damage: 10, hP: 35, maxHP: 50, techDamage: 10, spritePath: "Спрайты\\Illustrations\\БТР колонна", description: "ASD", quantity: 1));
+        AddUnitReserv(new unit(name: "Солдат СКСМ", damage: 4, hP: 1, maxHP: 3, techDamage: 4, spritePath: "Спрайты\\Illustrations\\Солдаты СКСМ", description: "ASD", quantity: 3));
+        RefreshRezerv();
         //AddUnitReserv(new unit("Солдат СКСМ", 23, 12, 5, "Спрайты\\Illustrations\\Солдаты СКСМ", "ASD", 3));
 
         //Тут экспериментально добавим несколько юнитов в резерв
@@ -93,6 +94,7 @@ public class BaseOfUnits : MonoBehaviour
     public void RefreshRezerv()
     {
         ClearRezerv();
+        reservScrollbar.value = 1;
         float yCard = 911.2f;
         GameObject tempChildObject;
 
@@ -129,6 +131,86 @@ public class BaseOfUnits : MonoBehaviour
         }
     }
 
+    public int CountUnit(string name, List<unit> UnitList)
+    {
+        int count = 0;
+        foreach(unit u in UnitList)
+        {
+            if (u.name == name)
+                count+= u.quantity;
+        }
+        return count;
+    }
+
+    public int NumberOfFirstUnit(string name, List<unit> UnitList)
+    {
+        for (int i = 0; i<= UnitList.Count; i++)
+        {
+            if (UnitList[i].name == name)
+                return i;
+        }
+        return -1;
+    }
+
+
+
+    public List<unit> RemoveUnit(string name, int quantity, List<unit> UnitList)
+    {
+        List<unit> takenUnits = new List<unit>();
+        int numberOfMaxHP;
+        int maxHPOfUnit = 1;
+
+        if(NumberOfFirstUnit(name , UnitList) != -1) //если такой юнит существует вообще
+        {
+            numberOfMaxHP = NumberOfFirstUnit(name, UnitList);
+            unit takenUnit;
+            while (quantity > 0)
+            {
+
+                for (int i = 0; i < UnitList.Count; i++)
+                {
+                    if (UnitList[i].name == name && UnitList[i].HP > maxHPOfUnit)
+                    {
+                        numberOfMaxHP = i;
+                    }
+                }
+
+                if (UnitList[numberOfMaxHP].quantity > quantity)
+                {
+
+                    Debug.Log("Убираем юнита номер " + numberOfMaxHP);
+                    takenUnit = unit.Copy(UnitList[numberOfMaxHP]);
+
+                    UnitList[numberOfMaxHP].quantity -= quantity;
+                    RefreshRezerv();
+                    //RezervUnitsObjects[numberOfMaxHP].transform.Find("Кол-во").GetComponent<Text>().text = Convert.ToString(UnitList[numberOfMaxHP].quantity);
+
+                    quantity = 0;
+                    takenUnits.Add(takenUnit);
+                    
+                }
+                else
+                {
+                    //Тут бы удалять ещё и сам объект юнита, чтоб память не захламлял
+                    takenUnit = unit.Copy(UnitList[numberOfMaxHP]);
+                    quantity -= UnitList[numberOfMaxHP].quantity;
+                    UnitList.RemoveAt(numberOfMaxHP);
+
+                    //Здесь бы обновлять резерв ещё раз
+                    if(AllUnitsRezervObject.activeInHierarchy)
+                        RefreshRezerv();
+                    takenUnits.Add(takenUnit);
+                    
+                }
+
+            }
+        }
+        return takenUnits;
+
+       
+            
+    }
+    
     public void ClearRezerv()
     {
         foreach (GameObject obj in RezervUnitsObjects)

@@ -711,23 +711,41 @@ namespace Assembly_CSharp
 
         public override void GivePolice()
         {
+            if (police < 10 && GameMainScript.BaseOfUnitsSC.CountUnit(name: "Солдат СКСМ", GameMainScript.BaseOfUnitsSC.RezervUnits) > 0)
+            {
+                GameMainScript.BaseOfUnitsSC.RemoveUnit("Солдат СКСМ", 1, GameMainScript.BaseOfUnitsSC.RezervUnits);
+                police++;
+                GameMainScript.MapSC.policeValueText.text = Convert.ToString(police) + "/10";
+            }
+
+            /*
             if(police < 10 && recoursesOfPlayer.soldiers > 0) //(Здесь будет проверка: если у игрока есть полицейские и если полицейских на районе меньше 10-ти)
             {
                 recoursesOfPlayer.soldiers--;//Тут надо отнимать у игрока одного полицейского
                 police ++;
                 GameMainScript.MapSC.policeValueText.text = Convert.ToString(police) + "/10";
-            }
+            }*/
 
         }
 
         public override void UngivePolice()
         {
+
+            if(police > 0)
+            {
+                police--;
+                GameMainScript.MapSC.policeValueText.text = Convert.ToString(police) + "/10";
+                GameMainScript.BaseOfUnitsSC.AddUnitReserv(new unit(name: "Солдат СКСМ", damage: 4, hP: 3, maxHP: 3, techDamage: 4, spritePath: "Спрайты\\Illustrations\\Солдаты СКСМ", description: "ASD", quantity: 1));
+                GameMainScript.BaseOfUnitsSC.RefreshRezerv();
+            }
+
+            /*
             if (police > 0) //(Здесь будет проверка: если у игрока есть полицейские и если полицейских на районе меньше 10-ти)
             {
                 recoursesOfPlayer.soldiers++;//Тут надо отнимать у игрока одного полицейского
                 police --;
                 GameMainScript.MapSC.policeValueText.text = Convert.ToString(police) + "/10";
-            }
+            }*/
 
         }
         public override void showArea()

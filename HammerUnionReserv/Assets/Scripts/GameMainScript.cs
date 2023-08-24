@@ -93,6 +93,8 @@ public class GameMainScript : MonoBehaviour
     [SerializeField] AudioClip ClockSound;
 
     internal static Map MapSC; //Ёто один-единственный экземпл€р объекта "—крипт карты", на котором всЄ висит что нужно дл€ карты
+    internal static BaseOfUnits BaseOfUnitsSC;
+
     enum states //—осто€ни€, в которых может находитьс€ пользователь
     {
         WatchingCases = 0,
@@ -161,6 +163,7 @@ public class GameMainScript : MonoBehaviour
         // Cases = new AllCases();
 
         MapSC = GameObject.Find("MapScript").GetComponent<Map>();
+        BaseOfUnitsSC = GameObject.Find("UnitsScript").GetComponent<BaseOfUnits>();
 
 
         if (!SLscript.isNewGame) //если загружаем игру, а не начинаем новую
