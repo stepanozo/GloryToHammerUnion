@@ -181,8 +181,8 @@ public class GameMainScript : MonoBehaviour
                 recoursesOfPlayer.Recourses = GD.Recourses;
                 recoursesOfPlayer.soldiers = GD.soldiers;
                 reputation.rep = GD.rep;
-            
 
+            BaseOfUnitsSC.RezervUnits = GD.RezervUnits;
 
             //Debug.Log("Из файла достали дел: " + SLscript.savedGames[SLscript.savedGames.Count - 1].AllCases.Count);
             //Debug.Log("Всего дел в список загрузилось: " + AllCases.Count);
@@ -215,6 +215,14 @@ public class GameMainScript : MonoBehaviour
 
             today = 1;
 
+            //Здесь добавить юнита попробуем
+            BaseOfUnitsSC.AddUnit(new unit(name: "Солдат СКСМ", damage: 4, hP: 3, maxHP: 3, techDamage: 4, spritePath: "Спрайты\\Illustrations\\Солдаты СКСМ", description: "ASD", quantity: 2), BaseOfUnitsSC.RezervUnits);
+            BaseOfUnitsSC.AddUnit(new unit(name: "БТР", damage: 10, hP: 50, maxHP: 50, techDamage: 10, spritePath: "Спрайты\\Illustrations\\БТР колонна", description: "ASD", quantity: 1), BaseOfUnitsSC.RezervUnits);
+            BaseOfUnitsSC.AddUnit(new unit(name: "Солдат СКСМ", damage: 4, hP: 3, maxHP: 3, techDamage: 4, spritePath: "Спрайты\\Illustrations\\Солдаты СКСМ", description: "ASD", quantity: 2), BaseOfUnitsSC.RezervUnits);
+            BaseOfUnitsSC.AddUnit(new unit(name: "БТР", damage: 10, hP: 50, maxHP: 50, techDamage: 10, spritePath: "Спрайты\\Illustrations\\БТР колонна", description: "ASD", quantity: 1), BaseOfUnitsSC.RezervUnits);
+            BaseOfUnitsSC.AddUnit(new unit(name: "БТР", damage: 10, hP: 35, maxHP: 50, techDamage: 10, spritePath: "Спрайты\\Illustrations\\БТР колонна", description: "ASD", quantity: 1), BaseOfUnitsSC.RezervUnits);
+            BaseOfUnitsSC.AddUnit(new unit(name: "Солдат СКСМ", damage: 4, hP: 1, maxHP: 3, techDamage: 4, spritePath: "Спрайты\\Illustrations\\Солдаты СКСМ", description: "ASD", quantity: 3), BaseOfUnitsSC.RezervUnits);
+            BaseOfUnitsSC.RefreshRezerv();
 
         }
 
@@ -674,8 +682,8 @@ public class GameMainScript : MonoBehaviour
             {
                 int plusMess = 20 - MapSC.TownAreaDict[key].spirits;
                 Debug.Log("Прибавляем беспорядков без учёта полиции " + Convert.ToString(plusMess));
-                Debug.Log("А полиции в районе при этом " + Convert.ToString(MapSC.TownAreaDict[key].police));
-                MapSC.TownAreaDict[key].AddMess(plusMess - MapSC.TownAreaDict[key].police * 2); //Добавляем беспорядки
+                Debug.Log("А полиции в районе при этом " + Convert.ToString(MapSC.TownAreaDict[key].policeUnits.Count));
+                MapSC.TownAreaDict[key].AddMess(plusMess - MapSC.TownAreaDict[key].policeUnits.Count * 2); //Добавляем беспорядки
 
                 //Сюда можно наверное условие поражения или хз
 

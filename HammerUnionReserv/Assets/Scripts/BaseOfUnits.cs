@@ -29,14 +29,7 @@ public class BaseOfUnits : MonoBehaviour
 
         GameSC = GameObject.Find("GameplaySystem").GetComponent<GameMainScript>(); //мб это надо удалить, всё как-то и без него работает
 
-        //Здесь добавить юнита попробуем
-        AddUnitReserv(new unit(name: "Солдат СКСМ", damage: 4, hP: 3, maxHP: 3, techDamage: 4, spritePath: "Спрайты\\Illustrations\\Солдаты СКСМ", description: "ASD", quantity: 2));
-        AddUnitReserv(new unit(name: "БТР", damage: 10, hP: 50, maxHP: 50, techDamage: 10, spritePath: "Спрайты\\Illustrations\\БТР колонна", description: "ASD", quantity: 1));
-        AddUnitReserv(new unit(name: "Солдат СКСМ", damage: 4, hP: 3, maxHP: 3, techDamage: 4, spritePath: "Спрайты\\Illustrations\\Солдаты СКСМ", description: "ASD", quantity: 2));
-        AddUnitReserv(new unit(name: "БТР", damage: 10, hP: 50, maxHP: 50, techDamage: 10, spritePath: "Спрайты\\Illustrations\\БТР колонна", description: "ASD", quantity: 1));
-        AddUnitReserv(new unit(name: "БТР", damage: 10, hP: 35, maxHP: 50, techDamage: 10, spritePath: "Спрайты\\Illustrations\\БТР колонна", description: "ASD", quantity: 1));
-        AddUnitReserv(new unit(name: "Солдат СКСМ", damage: 4, hP: 1, maxHP: 3, techDamage: 4, spritePath: "Спрайты\\Illustrations\\Солдаты СКСМ", description: "ASD", quantity: 3));
-        RefreshRezerv();
+      
         //AddUnitReserv(new unit("Солдат СКСМ", 23, 12, 5, "Спрайты\\Illustrations\\Солдаты СКСМ", "ASD", 3));
 
         //Тут экспериментально добавим несколько юнитов в резерв
@@ -93,17 +86,27 @@ public class BaseOfUnits : MonoBehaviour
 
     public void RefreshRezerv()
     {
+        float yCard;
+        if (RezervUnitsObjects.Count > 0)
+        {
+            RezervUnitsObjects[0].transform.SetParent(null);
+            //RezervUnitsObjects[0].transform.SetParent(null);
+            yCard = RezervUnitsObjects[0].transform.position.y;
+        }
+        else
+        {
+            yCard = 911.2f;
+        }
         ClearRezerv();
-        reservScrollbar.value = 1;
-        float yCard = 911.2f;
         GameObject tempChildObject;
+
 
         foreach (unit u in RezervUnits)
         {
 
             tempUnitObject = Instantiate(UnitPrefab, new Vector2(1691.37f, yCard), Quaternion.identity);
             tempUnitObject.transform.SetParent(GameObject.Find("Canvas").transform);
-            tempUnitObject.transform.SetParent(GameObject.Find("Юниты резерва2").transform);
+            tempUnitObject.transform.SetParent(AllUnitsRezervObject.transform);
             RezervUnitsObjects.Add(tempUnitObject);
 
             //Настраиваем иллюстрацию
@@ -118,17 +121,39 @@ public class BaseOfUnits : MonoBehaviour
 
 
             yCard -= 2715.523f - 2435f;
-            /*
-            RezervUnits.Add(new unit("s", 2, 3, 4, "sd", "asd", 123));
-            tempUnitObject = Instantiate(UnitPrefab, new Vector2(1691.37f, yCard), Quaternion.identity);
-            tempUnitObject.transform.SetParent(GameObject.Find("Canvas").transform);
-            tempUnitObject.transform.SetParent(GameObject.Find("Юниты резерва2").transform);
-            RezervUnitsObjects.Add(tempUnitObject);
-            //tempUnitObject.transform.SetParent(GameObject.Find("Юниты резерва").transform);
-            //tempUnitObject.transform.SetParent(AllUnitsRezervObject.transform);
-            //tempUnitObject.transform.position = new Vector2(1.9662f, yCard);
-            yCard -= 2715.523f - 2435f;*/
+
         }
+
+
+        /* ClearRezerv();
+         reservScrollbar.value = 1;
+         float yCard = 911.2f;
+         GameObject tempChildObject;
+
+
+         foreach (unit u in RezervUnits)
+         {
+
+             tempUnitObject = Instantiate(UnitPrefab, new Vector2(1691.37f, yCard), Quaternion.identity);
+             tempUnitObject.transform.SetParent(GameObject.Find("Canvas").transform);
+             tempUnitObject.transform.SetParent(AllUnitsRezervObject.transform);
+             RezervUnitsObjects.Add(tempUnitObject);
+
+             //Настраиваем иллюстрацию
+             tempChildObject = tempUnitObject.transform.Find("Иллюстрация").gameObject;
+             tempChildObject.GetComponent<Image>().sprite = Resources.Load<Sprite>(u.spritePath);
+
+             //Настраиваем здоровье
+             tempUnitObject.transform.Find("Здоровье").gameObject.transform.Find("Текст").GetComponent<Text>().text = Convert.ToString(u.HP);
+             tempUnitObject.transform.Find("Урон").gameObject.transform.Find("Текст").GetComponent<Text>().text = Convert.ToString(u.damage);
+             tempUnitObject.transform.Find("Урон по технике").gameObject.transform.Find("Текст").GetComponent<Text>().text = Convert.ToString(u.techDamage);
+             tempUnitObject.transform.Find("Кол-во").GetComponent<Text>().text = Convert.ToString(u.quantity);
+
+
+             yCard -= 2715.523f - 2435f;
+
+         }
+         */
     }
 
     public int CountUnit(string name, List<unit> UnitList)
@@ -138,6 +163,16 @@ public class BaseOfUnits : MonoBehaviour
         {
             if (u.name == name)
                 count+= u.quantity;
+        }
+        return count;
+    }
+
+    public int CountUnit(List<unit> UnitList)
+    {
+        int count = 0;
+        foreach (unit u in UnitList)
+        {
+                count += u.quantity;
         }
         return count;
     }
@@ -154,11 +189,19 @@ public class BaseOfUnits : MonoBehaviour
 
 
 
-    public List<unit> RemoveUnit(string name, int quantity, List<unit> UnitList)
+    public List<unit> RemoveUnit(string name, int quantity, List<unit> UnitList, bool MaxHPFirst = true)
     {
+        
+
         List<unit> takenUnits = new List<unit>();
         int numberOfMaxHP;
-        int maxHPOfUnit = 1;
+
+        int maxHPOfUnit;
+
+        if (MaxHPFirst)
+            maxHPOfUnit = 1;
+        else //Внизу считай не максимум, а минимум уже.
+            maxHPOfUnit = 999999999;
 
         if(NumberOfFirstUnit(name , UnitList) != -1) //если такой юнит существует вообще
         {
@@ -169,7 +212,7 @@ public class BaseOfUnits : MonoBehaviour
 
                 for (int i = 0; i < UnitList.Count; i++)
                 {
-                    if (UnitList[i].name == name && UnitList[i].HP > maxHPOfUnit)
+                    if ((UnitList[i].name == name && UnitList[i].HP > maxHPOfUnit && MaxHPFirst) || (UnitList[i].name == name && UnitList[i].HP < maxHPOfUnit && !MaxHPFirst))
                     {
                         numberOfMaxHP = i;
                     }
@@ -180,6 +223,7 @@ public class BaseOfUnits : MonoBehaviour
 
                     Debug.Log("Убираем юнита номер " + numberOfMaxHP);
                     takenUnit = unit.Copy(UnitList[numberOfMaxHP]);
+                    takenUnit.quantity = quantity; //У взятого юнита будет такое кол-во, которое в параметре функции (т.е. сколько и хотели взять)
 
                     UnitList[numberOfMaxHP].quantity -= quantity;
                     RefreshRezerv();
@@ -217,6 +261,7 @@ public class BaseOfUnits : MonoBehaviour
         {
             Destroy(obj);
         }
+        RezervUnitsObjects.Clear() ;
     }
 
     public void ShowRezerv()
@@ -249,10 +294,10 @@ public class BaseOfUnits : MonoBehaviour
 
     }
 
-    public void AddUnitReserv(unit addedUnit)
+    public void AddUnit(unit addedUnit, List<unit> unitList)
     {
         bool flg = true;
-        foreach (unit u in RezervUnits)
+        foreach (unit u in unitList)
         {
             if(u.name == addedUnit.name && u.HP == addedUnit.HP)
             {
@@ -262,7 +307,7 @@ public class BaseOfUnits : MonoBehaviour
             }
         }
         if (flg)
-            RezervUnits.Add(addedUnit);
+            unitList.Add(addedUnit);
 
 
         /*

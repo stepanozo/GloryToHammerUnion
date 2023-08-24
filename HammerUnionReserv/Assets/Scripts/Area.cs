@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI; //Добавляем чтобы юзать интерфейс и тексты всякие
+//using UnityEngine.UIElements;
 
 namespace Assembly_CSharp
 {
@@ -194,7 +195,7 @@ namespace Assembly_CSharp
         public int[] givenResources;
         public string name;
         public int population;
-        public int police;
+        public List<unit> policeUnits;
         public double revolutionChance;
 
 
@@ -250,7 +251,7 @@ namespace Assembly_CSharp
 
 
             this.revolutionChance = revolutionChance;
-            police = 0;
+            policeUnits = new List<unit>();
             
         }
 
@@ -284,7 +285,7 @@ namespace Assembly_CSharp
 
         public void RefreshGivenRes() //ИЩЕМ ТУТ ОШИБКУ КОТОРАЯ ВСЁ ЛОМАЕТ
         {
-            int soldiersCount = police;
+            int soldiersCount = GameMainScript.BaseOfUnitsSC.CountUnit(policeUnits);
 
             for (int i = 0; i < 4; i++)
             {
@@ -330,7 +331,7 @@ namespace Assembly_CSharp
 
                     GameMainScript.MapSC.villageResPictures[numberOfPic].SetActive(true);
 
-                    if (police > 0)
+                    if (GameMainScript.BaseOfUnitsSC.CountUnit(policeUnits) > 0)
                     {
                         givesResourses = true;
                         GameMainScript.MapSC.villageResGivenTexts[numberOfPic].text = Convert.ToString(givenResources[i]);
@@ -360,7 +361,21 @@ namespace Assembly_CSharp
 
             Debug.Log("Сейчас в деревне " + Convert.ToString(SumRes) + "ресурсов, она приносит " + Convert.ToString(SumGivenRes) + "ресурсов");
 
+            if (GameMainScript.BaseOfUnitsSC.CountUnit(policeUnits) < 10 && GameMainScript.BaseOfUnitsSC.CountUnit(name: "Солдат СКСМ", GameMainScript.BaseOfUnitsSC.RezervUnits) > 0 && SumGivenRes < SumRes)
+            {
+                //GameMainScript.BaseOfUnitsSC.RemoveUnit("Солдат СКСМ", 1, GameMainScript.BaseOfUnitsSC.RezervUnits);
+                //police++;
 
+                List<unit> takenUnitList = GameMainScript.BaseOfUnitsSC.RemoveUnit("Солдат СКСМ", 1, GameMainScript.BaseOfUnitsSC.RezervUnits);
+                GameMainScript.BaseOfUnitsSC.AddUnit(takenUnitList[0], policeUnits);
+
+                GameMainScript.MapSC.policeValueText.text = Convert.ToString(GameMainScript.BaseOfUnitsSC.CountUnit(policeUnits)) + "/10";
+
+                RefreshGivenRes();
+                ShowGivenRes();
+            }
+
+            /*
             if (police < 20 && recoursesOfPlayer.soldiers > 0)// && SumGivenRes < SumRes) //(Здесь будет проверка: если у игрока есть полицейские и если полицейских на районе меньше 10-ти)
             {
                 recoursesOfPlayer.soldiers--;//Тут надо отнимать у игрока одного полицейского
@@ -368,6 +383,7 @@ namespace Assembly_CSharp
                 RefreshGivenRes();
                 ShowGivenRes();
             }
+            */
 
 
             RefreshSoldiers();
@@ -378,12 +394,29 @@ namespace Assembly_CSharp
         public void RefreshSoldiers()
         {
 
-            GameMainScript.MapSC.soldiersVillageValueText.text = Convert.ToString(police) + "/20";
+            GameMainScript.MapSC.soldiersVillageValueText.text = Convert.ToString(GameMainScript.BaseOfUnitsSC.CountUnit(policeUnits)) + "/10";
         }
 
         public void UngiveSoldiers()
         {
-            if (police > 0) 
+
+            if (GameMainScript.BaseOfUnitsSC.CountUnit(policeUnits) > 0)
+            {
+                List<unit> removedUnits = GameMainScript.BaseOfUnitsSC.RemoveUnit("Солдат СКСМ", 1, policeUnits, MaxHPFirst: false);
+                GameMainScript.BaseOfUnitsSC.AddUnit(removedUnits[0], GameMainScript.BaseOfUnitsSC.RezervUnits);
+
+                GameMainScript.MapSC.policeValueText.text = Convert.ToString(GameMainScript.BaseOfUnitsSC.CountUnit(policeUnits)) + "/10";
+                //GameMainScript.BaseOfUnitsSC.AddUnit(new unit(name: "Солдат СКСМ", damage: 4, hP: 3, maxHP: 3, techDamage: 4, spritePath: "Спрайты\\Illustrations\\Солдаты СКСМ", description: "ASD", quantity: 1), GameMainScript.BaseOfUnitsSC.RezervUnits);
+                GameMainScript.BaseOfUnitsSC.RefreshRezerv();
+
+                if (SumGivenRes > 0)
+                {
+                    RefreshGivenRes();
+                    ShowGivenRes();
+                }
+            }
+
+            /*if (police > 0) 
             {
                 recoursesOfPlayer.soldiers++;//Тут надо отнимать у игрока одного полицейского
                 police--;
@@ -394,7 +427,7 @@ namespace Assembly_CSharp
                     ShowGivenRes();
                 }
 
-            }
+            }*/
 
 
             RefreshSoldiers();
@@ -424,7 +457,7 @@ namespace Assembly_CSharp
             GameMainScript.MapSC.villagePopulationText.text = "Население: " + Convert.ToString(population);
             GameMainScript.MapSC.revolutionChanceText.text = "Шанс восстания: " + Convert.ToString(revolutionChance) + "%";
             GameMainScript.MapSC.RequireRecoursesLabel.text = "Нужно ресурсов:";
-            GameMainScript.MapSC.soldiersVillageValueText.text = Convert.ToString(police) + "/20";
+            GameMainScript.MapSC.soldiersVillageValueText.text = Convert.ToString(GameMainScript.BaseOfUnitsSC.CountUnit(policeUnits)) + "/10";
             //GameMainScript.MapSC..text = "Нужно ресурсов:"; КОРОЧЕ СДЕЛАЙ ТУТ ПОКАЗ СОЛДАТИКОВ
 
             RefreshResourses();
@@ -610,7 +643,9 @@ namespace Assembly_CSharp
     {
         public int[] requiredRecourses;
         public int[] currentRecourses;
-        public int police;
+        //public int police;
+
+        public List<unit> policeUnits;
 
         public int RequiredBudget
         {
@@ -680,6 +715,8 @@ namespace Assembly_CSharp
             CurrentProvision = 0;
             CurrentMedicine = 0;
             CurrentPermissions = 0;
+
+            policeUnits = new List<unit>();
         }
 
         public override void GiveRecourses(int numberOfPicture)
@@ -711,11 +748,15 @@ namespace Assembly_CSharp
 
         public override void GivePolice()
         {
-            if (police < 10 && GameMainScript.BaseOfUnitsSC.CountUnit(name: "Солдат СКСМ", GameMainScript.BaseOfUnitsSC.RezervUnits) > 0)
+            if (GameMainScript.BaseOfUnitsSC.CountUnit(policeUnits) < 10 && GameMainScript.BaseOfUnitsSC.CountUnit(name: "Солдат СКСМ", GameMainScript.BaseOfUnitsSC.RezervUnits) > 0)
             {
-                GameMainScript.BaseOfUnitsSC.RemoveUnit("Солдат СКСМ", 1, GameMainScript.BaseOfUnitsSC.RezervUnits);
-                police++;
-                GameMainScript.MapSC.policeValueText.text = Convert.ToString(police) + "/10";
+                //GameMainScript.BaseOfUnitsSC.RemoveUnit("Солдат СКСМ", 1, GameMainScript.BaseOfUnitsSC.RezervUnits);
+                //police++;
+
+                List<unit> takenUnitList = GameMainScript.BaseOfUnitsSC.RemoveUnit("Солдат СКСМ", 1, GameMainScript.BaseOfUnitsSC.RezervUnits);
+                GameMainScript.BaseOfUnitsSC.AddUnit(takenUnitList[0], policeUnits);
+
+                GameMainScript.MapSC.policeValueText.text = Convert.ToString(GameMainScript.BaseOfUnitsSC.CountUnit(policeUnits)) + "/10";
             }
 
             /*
@@ -731,11 +772,13 @@ namespace Assembly_CSharp
         public override void UngivePolice()
         {
 
-            if(police > 0)
+            if(GameMainScript.BaseOfUnitsSC.CountUnit(policeUnits) > 0)
             {
-                police--;
-                GameMainScript.MapSC.policeValueText.text = Convert.ToString(police) + "/10";
-                GameMainScript.BaseOfUnitsSC.AddUnitReserv(new unit(name: "Солдат СКСМ", damage: 4, hP: 3, maxHP: 3, techDamage: 4, spritePath: "Спрайты\\Illustrations\\Солдаты СКСМ", description: "ASD", quantity: 1));
+                List<unit> removedUnits = GameMainScript.BaseOfUnitsSC.RemoveUnit("Солдат СКСМ", 1, policeUnits, MaxHPFirst: false);
+                GameMainScript.BaseOfUnitsSC.AddUnit(removedUnits[0], GameMainScript.BaseOfUnitsSC.RezervUnits);
+
+                GameMainScript.MapSC.policeValueText.text = Convert.ToString(GameMainScript.BaseOfUnitsSC.CountUnit(policeUnits)) + "/10";
+                //GameMainScript.BaseOfUnitsSC.AddUnit(new unit(name: "Солдат СКСМ", damage: 4, hP: 3, maxHP: 3, techDamage: 4, spritePath: "Спрайты\\Illustrations\\Солдаты СКСМ", description: "ASD", quantity: 1), GameMainScript.BaseOfUnitsSC.RezervUnits);
                 GameMainScript.BaseOfUnitsSC.RefreshRezerv();
             }
 
@@ -842,7 +885,8 @@ namespace Assembly_CSharp
             {
                 this.spirits = spirits;
                 mess = 0;
-                police = 0; 
+                //police = 0; 
+                policeUnits = new List<unit>();
                 messCame = false;
             }
         }
@@ -867,7 +911,7 @@ namespace Assembly_CSharp
                 GameMainScript.MapSC.UpperStatusText.text = "Настроение: " + Convert.ToString(spirits) + "/100";
                 GameMainScript.MapSC.statusText.text = "Беспорядки: " + Convert.ToString(mess) + "/50";
                 GameMainScript.MapSC.policeObject.SetActive(true);
-                GameMainScript.MapSC.policeValueText.text = Convert.ToString(police) + "/10";
+                GameMainScript.MapSC.policeValueText.text = Convert.ToString(GameMainScript.BaseOfUnitsSC.CountUnit(policeUnits)) + "/10";
             }
             else
             {
@@ -936,7 +980,8 @@ namespace Assembly_CSharp
             {
                 this.pollution = pollution;
                 mess = 0;
-                police = 0;
+                //police = 0;
+                policeUnits = new List<unit>();
                 messCame = false;
             }
         }
@@ -949,7 +994,7 @@ namespace Assembly_CSharp
                 GameMainScript.MapSC.statusText.text = "Загрязнения: " + pollution;
                 GameMainScript.MapSC.statusText.text = "Беспорядки: " + Convert.ToString(mess) + "/50";
                 GameMainScript.MapSC.policeObject.SetActive(true);
-                GameMainScript.MapSC.policeValueText.text = Convert.ToString(police) + "/10";
+                GameMainScript.MapSC.policeValueText.text = Convert.ToString(GameMainScript.BaseOfUnitsSC.CountUnit(policeUnits)) + "/10";
             }
             else
             {

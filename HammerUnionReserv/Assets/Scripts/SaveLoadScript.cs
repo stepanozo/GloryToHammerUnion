@@ -38,6 +38,7 @@ using Assets.Scripts;
     public Dictionary<string, village> VillageDict = new Dictionary<string, village>(); //Словарь всех деревень
     public Dictionary<buildings, building> buildingDict = new Dictionary<buildings, building>();
     public Dictionary<int, Case> AllCases = new Dictionary<int, Case>();
+    public List<unit> RezervUnits = new List<unit>();
 
     public int[] Recourses;
     public int soldiers;
@@ -56,6 +57,7 @@ using Assets.Scripts;
         VillageDict = GameMainScript.MapSC.VillageDict;
         buildingDict = GameMainScript.MapSC.buildingDict;
         AllCases = Map.GameSC.AllCases;
+        RezervUnits = GameMainScript.BaseOfUnitsSC.RezervUnits;
 
         Recourses = recoursesOfPlayer.Recourses;
         soldiers = recoursesOfPlayer.soldiers;

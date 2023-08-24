@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -5,6 +6,7 @@ using UnityEngine;
 
 namespace Assembly_CSharp
 {
+    [Serializable]
     public class unit
     {
         public string name;
