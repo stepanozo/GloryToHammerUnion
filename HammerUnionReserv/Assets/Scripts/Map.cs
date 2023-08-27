@@ -177,13 +177,13 @@ internal class Map : MonoBehaviour
         EmptyAreaDict["emptyTop"] = new emptyArea(name: "Пустырь (В)");
         EmptyAreaDict["emptyBottom"] = new emptyArea(name: "Пустырь (Ю)");
 
-        TownAreaDict["square"] = new townArea(name: "Главная площадь", description: "Основной жилой район, где располагается ваша ратуша, а также другие" +
+        TownAreaDict["square"] = new townArea(name: "Главная площадь", description: "Основной жилой район, где располагается ваша ратуша, а также другие " +
             "здания чиновниклв. Здесь чаще всего собираются толпы народа для обсуждения политики.", requiredBudget: 20);
-        TownAreaDict["workLeft"] = new townArea(name: "Рабочий район (З)", description: "Один из двух рабочих районов города. Здесь живут простые рабочие," +
+        TownAreaDict["workLeft"] = new townArea(name: "Рабочий район (З)", description: "Один из двух рабочих районов города. Здесь живут простые рабочие, " +
             "каждый день им нужны материалы, чтобы работать на заводах и фабриках. Чаще всего именно люди этих районов участвуют в городских событиях.", requiredMaterials: 10);
-        TownAreaDict["workRight"] = new townArea(name: "Рабочий район (В)", description: "Один из двух рабочих районов города. Здесь живут простые рабочие," +
+        TownAreaDict["workRight"] = new townArea(name: "Рабочий район (В)", description: "Один из двух рабочих районов города. Здесь живут простые рабочие, " +
             "каждый день им нужны материалы, чтобы работать на заводах и фабриках. Чаще всего именно люди этих районов участвуют в городских событиях.", requiredMaterials: 10);
-        TownAreaDict["stock"] = new townArea(name: "Складской район", description: "Почти самый важный район города. Здесь хранятся лекарства и провизия" +
+        TownAreaDict["stock"] = new townArea(name: "Складской район", description: "Почти самый важный район города. Здесь хранятся лекарства и провизия " +
             "для всего города. Также именно сюда приезжают все поезда.", requiredMedicine: 5, requiredProvision: 10);
         MapAreaDict["factory"] = new factoryArea();
 

@@ -4,12 +4,30 @@ using UnityEngine;
 using Assets.Scripts;
 using Assembly_CSharp;
 using UnityEngine.UI;
-using TMPro.EditorUtilities;
+//using TMPro.EditorUtilities;
 using System;
 
 public class BaseOfUnits : MonoBehaviour
 {
+
+    //Анимации для перехода в бой
+    public Animator RezervAnimator;
+    public Animator ButtonsAnimator;
+    public Animator InfoAnimator;
+
+    public Animator BattleCardsAnimator;
+    public Animator BattlePanelAnimator;
+
+
+    //Для боя
+    public Animator ButtleReservAnimator;
+    public GameObject BattleUnitsRezervObject;
+    public GameObject BattleRezervObject;
+    [SerializeField] Scrollbar BattleReservScrollbar;
+    public List<GameObject> BattleRezervUnitsObjects = new List<GameObject>();
     //Для резерва
+
+
 
     [SerializeField] Scrollbar reservScrollbar;
     [SerializeField] GameObject rezervPanel;
@@ -22,6 +40,10 @@ public class BaseOfUnits : MonoBehaviour
     public GameObject UnitPrefab;
     public GameObject AllUnitsRezervObject;
     public GameObject tempUnitObject;
+    public GameObject simpleUnitPanel;
+    public Text simpleUnitDescription;
+    public Text simpleUnitName;
+    private CardBehaviour cardScript;
 
     private void Start()
     {
@@ -29,16 +51,7 @@ public class BaseOfUnits : MonoBehaviour
 
         GameSC = GameObject.Find("GameplaySystem").GetComponent<GameMainScript>(); //мб это надо удалить, всё как-то и без него работает
 
-      
-        //AddUnitReserv(new unit("Солдат СКСМ", 23, 12, 5, "Спрайты\\Illustrations\\Солдаты СКСМ", "ASD", 3));
-
-        //Тут экспериментально добавим несколько юнитов в резерв
-
-        //Instantiate(UnitPrefab, new Vector3(1.9662f, 2715.523f, 0f), Quaternion.identity);
-
-
-
-        //SetScaleOfRezerv(); 
+     
 
     }
 
@@ -73,6 +86,51 @@ public class BaseOfUnits : MonoBehaviour
     }*/
 
 
+
+    public void ToTheBattle()
+    {
+        BattleReservScrollbar.value = 1;
+        GameSC.PlayerState = GameMainScript.states.Fighting;
+        GameSC.SoundSource.PlayOneShot(GameSC.PaperSound);
+        RezervAnimator.SetBool("RezervOpened", false); 
+        ButtonsAnimator.SetBool("ButtonsOpened", false);
+        InfoAnimator.SetBool("InfoOpened", false);
+        simpleUnitPanel.SetActive(false);
+        GameSC.mapAnimator.SetBool("MapOpened", false);
+
+        if(GameSC.ActiveCaseNumber == 0)
+            GameSC.delo1Animator.SetInteger("Condition", 1);
+        else
+            GameSC.delo2Animator.SetInteger("Condition", 1);
+
+        BattlePanelAnimator.SetBool("PanelOpened", true);
+        ButtleReservAnimator.SetBool("RezervOpened", true);
+        RefreshRezerv(battle: true); //Обновить резерв именно битвы, а не обычный резерв
+    }
+
+    public void exitBattle()
+    {
+        
+        GameSC.PlayerState = GameMainScript.states.WatchingMap;
+        GameSC.SoundSource.PlayOneShot(GameSC.PaperSound);
+        RezervAnimator.SetBool("RezervOpened", true);
+        ButtonsAnimator.SetBool("ButtonsOpened", true);
+        InfoAnimator.SetBool("InfoOpened", true);
+        GameSC.mapAnimator.SetBool("MapOpened", true);
+
+        if (GameSC.ActiveCaseNumber == 0)
+            GameSC.delo1Animator.SetInteger("Condition", 3);
+        else
+            GameSC.delo2Animator.SetInteger("Condition", 3);
+
+        BattlePanelAnimator.SetBool("PanelOpened", false);
+        ButtleReservAnimator.SetBool("RezervOpened", false);
+        RezervAnimator.SetBool("RezervOpened", true);
+
+        rezervPanel.SetActive(false);
+        RefreshRezerv();
+    }
+
     public void InitializeUnits()
     {
 
@@ -84,30 +142,59 @@ public class BaseOfUnits : MonoBehaviour
     }
 
 
-    public void RefreshRezerv()
+    public void RefreshRezerv(bool battle = false)
     {
-        float yCard;
-        if (RezervUnitsObjects.Count > 0)
+        GameObject panel;
+        GameObject parentUnits;
+        List<GameObject> unitObjects;
+
+        //Тут определяем в зависимости от параметра, в какую панель резерва спавним карточки
+
+        if (!battle)
         {
-            RezervUnitsObjects[0].transform.SetParent(null);
+            unitObjects = RezervUnitsObjects;
+            panel = rezervPanel;
+            parentUnits = AllUnitsRezervObject;
+           
+            Debug.Log("Не файтимся");
+
+            
+        }
+        else
+        {
+            panel = BattleRezervObject;
+            parentUnits = BattleUnitsRezervObject;
+            unitObjects = BattleRezervUnitsObjects;
+
+            Debug.Log("Файтимся");
+        }
+
+        float yCard;
+        if (unitObjects.Count > 0)
+        {
+            unitObjects[0].transform.SetParent(null);
             //RezervUnitsObjects[0].transform.SetParent(null);
-            yCard = RezervUnitsObjects[0].transform.position.y;
+            yCard = unitObjects[0].transform.position.y;
         }
         else
         {
             yCard = 911.2f;
         }
-        ClearRezerv();
+        ClearRezerv(battle);
         GameObject tempChildObject;
 
 
         foreach (unit u in RezervUnits)
         {
-
-            tempUnitObject = Instantiate(UnitPrefab, new Vector2(1691.37f, yCard), Quaternion.identity);
+            //1691.37f
+            //1691-730 = 961
+            Debug.Log("позиция резерва " + panel.transform.position.x);
+            tempUnitObject = Instantiate(UnitPrefab, new Vector2(panel.transform.position.x, yCard), Quaternion.identity);
+            cardScript = tempUnitObject.GetComponent<CardBehaviour>();
+            cardScript.u = u;
             tempUnitObject.transform.SetParent(GameObject.Find("Canvas").transform);
-            tempUnitObject.transform.SetParent(AllUnitsRezervObject.transform);
-            RezervUnitsObjects.Add(tempUnitObject);
+            tempUnitObject.transform.SetParent(parentUnits.transform);
+            unitObjects.Add(tempUnitObject);
 
             //Настраиваем иллюстрацию
             tempChildObject = tempUnitObject.transform.Find("Иллюстрация").gameObject;
@@ -255,21 +342,28 @@ public class BaseOfUnits : MonoBehaviour
             
     }
     
-    public void ClearRezerv()
+    public void ClearRezerv(bool battle = false)
     {
-        foreach (GameObject obj in RezervUnitsObjects)
+        if (battle)
         {
-            Destroy(obj);
+            foreach (GameObject obj in BattleRezervUnitsObjects)
+            {
+                Destroy(obj);
+            }
+            BattleRezervUnitsObjects.Clear();
         }
-        RezervUnitsObjects.Clear() ;
+        else
+        {
+            foreach (GameObject obj in RezervUnitsObjects)
+            {
+                Destroy(obj);
+            }
+            RezervUnitsObjects.Clear();
+        }
     }
 
     public void ShowRezerv()
     {
-
-        float yCard = 911.2f;
-
-       
         rezervPanel.SetActive(true);
         reservScrollbar.value = 1;
         RefreshRezerv();

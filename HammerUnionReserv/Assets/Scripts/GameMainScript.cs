@@ -80,11 +80,11 @@ public class GameMainScript : MonoBehaviour
     public Animator villageMapAnimator;
     public Animator warMapAnimator;
     [SerializeField] Animator NextDayButtonAnimator;
-    [SerializeField] Animator delo1Animator;
-    [SerializeField] Animator delo2Animator;
+    public Animator delo1Animator;
+    public Animator delo2Animator;
     [SerializeField] Animator magazineAnimator;
 
-    states PlayerState = states.WatchingCases;
+    public states PlayerState = states.WatchingCases;
     //[SerializeField] GameObject soundObject;
     public AudioSource SoundSource;// = soundObject.GetComponent<AudioSource>(); //то, что будет вызывать звуки
     public AudioClip PaperSound;
@@ -95,12 +95,13 @@ public class GameMainScript : MonoBehaviour
     internal static Map MapSC; //Это один-единственный экземпляр объекта "Скрипт карты", на котором всё висит что нужно для карты
     internal static BaseOfUnits BaseOfUnitsSC;
 
-    enum states //Состояния, в которых может находиться пользователь
+    public enum states //Состояния, в которых может находиться пользователь
     {
         WatchingCases = 0,
         WatchingMap = 1,
         ReadingMagazine = 2,
-        ReadingLetters = 3
+        ReadingLetters = 3,
+        Fighting = 4
     }
 
     public enum recoursesEnum
@@ -118,7 +119,6 @@ public class GameMainScript : MonoBehaviour
     {
         for (int i = 0; i < 5; i++)
             recoursesTable[i].text = Convert.ToString(recoursesOfPlayer.Recourses[i]);
-        soldiersValue.text = Convert.ToString(recoursesOfPlayer.soldiers);
 
     }
 
@@ -216,13 +216,13 @@ public class GameMainScript : MonoBehaviour
             today = 1;
 
             //Здесь добавить юнита попробуем
-            BaseOfUnitsSC.AddUnit(new unit(name: "Солдат СКСМ", damage: 4, hP: 3, maxHP: 3, techDamage: 4, spritePath: "Спрайты\\Illustrations\\Солдаты СКСМ", description: "ASD", quantity: 2), BaseOfUnitsSC.RezervUnits);
-            BaseOfUnitsSC.AddUnit(new unit(name: "БТР", damage: 10, hP: 50, maxHP: 50, techDamage: 10, spritePath: "Спрайты\\Illustrations\\БТР колонна", description: "ASD", quantity: 1), BaseOfUnitsSC.RezervUnits);
+            BaseOfUnitsSC.AddUnit(new unit(name: "Солдат СКСМ", damage: 4, hP: 3, maxHP: 3, techDamage: 4, spritePath: "Спрайты\\Illustrations\\Солдаты СКСМ", description: "Здоровье: 25/50\tУрон: 25\tУрон по технике: 25\tКол-во: 25\r\nЭкипаж: 10\r\nСпособность: загружает в себя 10 юнитов-солдат или выгружает весь свой экипаж, который сразу же получает возможность атаковать\r\n", quantity: 2), BaseOfUnitsSC.RezervUnits);
+            BaseOfUnitsSC.AddUnit(new unit(name: "БТР", damage: 10, hP: 50, maxHP: 50, techDamage: 10, spritePath: "Спрайты\\Illustrations\\БТР колонна", description: "Способность: загружает в себя 10 юнитов-солдат или выгружает весь свой экипаж, который сразу же получает возможность атаковать\r\n", quantity: 1), BaseOfUnitsSC.RezervUnits);
             BaseOfUnitsSC.AddUnit(new unit(name: "Солдат СКСМ", damage: 4, hP: 3, maxHP: 3, techDamage: 4, spritePath: "Спрайты\\Illustrations\\Солдаты СКСМ", description: "ASD", quantity: 2), BaseOfUnitsSC.RezervUnits);
             BaseOfUnitsSC.AddUnit(new unit(name: "БТР", damage: 10, hP: 50, maxHP: 50, techDamage: 10, spritePath: "Спрайты\\Illustrations\\БТР колонна", description: "ASD", quantity: 1), BaseOfUnitsSC.RezervUnits);
             BaseOfUnitsSC.AddUnit(new unit(name: "БТР", damage: 10, hP: 35, maxHP: 50, techDamage: 10, spritePath: "Спрайты\\Illustrations\\БТР колонна", description: "ASD", quantity: 1), BaseOfUnitsSC.RezervUnits);
             BaseOfUnitsSC.AddUnit(new unit(name: "Солдат СКСМ", damage: 4, hP: 1, maxHP: 3, techDamage: 4, spritePath: "Спрайты\\Illustrations\\Солдаты СКСМ", description: "ASD", quantity: 3), BaseOfUnitsSC.RezervUnits);
-            BaseOfUnitsSC.RefreshRezerv();
+            //BaseOfUnitsSC.RefreshRezerv();
 
         }
 
