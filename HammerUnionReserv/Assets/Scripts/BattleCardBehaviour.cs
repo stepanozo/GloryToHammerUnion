@@ -8,7 +8,7 @@ using UnityEngine.UI;
 using System;
 using UnityEngine.EventSystems;
 
-public class CardBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+public class BattleCardBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
 
     public unit u;
@@ -28,13 +28,6 @@ public class CardBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (Map.GameSC.PlayerState != GameMainScript.states.Fighting)
-        {
-
-            GameMainScript.BaseOfUnitsSC.simpleUnitDescription.text = "Здоровье: " + u.HP + "/" + u.maxHP + " \t Урон: " + u.damage + " \t По технике: " + u.techDamage + " \t Кол-во: " + u.quantity + "\n" + u.description;
-            GameMainScript.BaseOfUnitsSC.simpleUnitName.text = u.name;
-            GameMainScript.BaseOfUnitsSC.simpleUnitPanel.SetActive(true);
-        }
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -54,20 +47,16 @@ public class CardBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         GameMainScript.BaseOfUnitsSC.BigUnitName.text = u.name;
         GameMainScript.BaseOfUnitsSC.BigUnitDescription.text = u.description;
 
-        GameMainScript.BaseOfUnitsSC.buttonAbility.SetActive(false);
-        GameMainScript.BaseOfUnitsSC.buttonAttack.SetActive(false);
-        GameMainScript.BaseOfUnitsSC.buttonRetreat.SetActive(false);
-        GameMainScript.BaseOfUnitsSC.buttonPlayIt.SetActive(true);
+        GameMainScript.BaseOfUnitsSC.buttonAbility.SetActive(true);
+        GameMainScript.BaseOfUnitsSC.buttonAttack.SetActive(true);
+        GameMainScript.BaseOfUnitsSC.buttonRetreat.SetActive(true);
+        GameMainScript.BaseOfUnitsSC.buttonPlayIt.SetActive(false);
     }
 
 
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (Map.GameSC.PlayerState != GameMainScript.states.Fighting)
-        {
-            GameMainScript.BaseOfUnitsSC.simpleUnitPanel.SetActive(false);
-        }
     }
 
 }

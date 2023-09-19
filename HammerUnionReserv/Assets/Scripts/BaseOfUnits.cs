@@ -18,6 +18,16 @@ public class BaseOfUnits : MonoBehaviour
     public Animator BattleCardsAnimator;
     public Animator BattlePanelAnimator;
 
+    //Панель юнита
+    public GameObject BigUnitPanel;
+    public Text BigUnitName;
+    public Text BigUnitDescription;
+    public GameObject CardOnPanel;
+    public  GameObject buttonAttack;
+    public GameObject buttonAbility;
+    public GameObject buttonRetreat;
+    public GameObject buttonPlayIt;
+
 
     //Для боя
     public Animator ButtleReservAnimator;
