@@ -54,6 +54,11 @@ public class BattleCardBehaviour : MonoBehaviour, IPointerEnterHandler, IPointer
     }
 
 
+    public void DestroyThis()
+    {
+        Debug.Log("Надо уничтожить это");
+        Destroy(gameObject);
+    }
 
     public void OnPointerExit(PointerEventData eventData)
     {

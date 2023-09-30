@@ -197,7 +197,8 @@ namespace Assembly_CSharp
         public int population;
         public List<unit> policeUnits;
         public double revolutionChance;
-
+        public List<unit> fightAllyUnits;
+        public List<unit> fightEnemyUnits;
 
         public int SumRes
         {
@@ -252,7 +253,19 @@ namespace Assembly_CSharp
 
             this.revolutionChance = revolutionChance;
             policeUnits = new List<unit>();
-            
+            fightAllyUnits = new List<unit>();
+            fightEnemyUnits = new List<unit>();
+
+            fightAllyUnits.Add(new unit(name: "Солдат СКСМ", damage: 4, hP: 3, maxHP: 3, techDamage: 4, spritePath: "Спрайты\\Illustrations\\Солдаты СКСМ", description: "Здоровье: 25/50\tУрон: 25\tУрон по технике: 25\tКол-во: 25\r\nЭкипаж: 10\r\nСпособность: загружает в себя 10 юнитов-солдат или выгружает весь свой экипаж, который сразу же получает возможность атаковать\r\n", quantity: 2));
+            fightAllyUnits.Add(new unit(name: "БТР", damage: 10, hP: 50, maxHP: 50, techDamage: 10, spritePath: "Спрайты\\Illustrations\\БТР колонна", description: "Способность: загружает в себя 10 юнитов-солдат или выгружает весь свой экипаж, который сразу же получает возможность атаковать\r\n", quantity: 1));
+            fightAllyUnits.Add(new unit(name: "Солдат СКСМ", damage: 4, hP: 3, maxHP: 3, techDamage: 4, spritePath: "Спрайты\\Illustrations\\Солдаты СКСМ", description: "Здоровье: 25/50\tУрон: 25\tУрон по технике: 25\tКол-во: 25\r\nЭкипаж: 10\r\nСпособность: загружает в себя 10 юнитов-солдат или выгружает весь свой экипаж, который сразу же получает возможность атаковать\r\n", quantity: 2));
+            fightAllyUnits.Add(new unit(name: "БТР", damage: 10, hP: 50, maxHP: 50, techDamage: 10, spritePath: "Спрайты\\Illustrations\\БТР колонна", description: "Способность: загружает в себя 10 юнитов-солдат или выгружает весь свой экипаж, который сразу же получает возможность атаковать\r\n", quantity: 1));
+
+            fightEnemyUnits.Add(new unit(name: "Солдат СКСМ", damage: 4, hP: 3, maxHP: 3, techDamage: 4, spritePath: "Спрайты\\Illustrations\\Солдаты СКСМ", description: "Здоровье: 25/50\tУрон: 25\tУрон по технике: 25\tКол-во: 25\r\nЭкипаж: 10\r\nСпособность: загружает в себя 10 юнитов-солдат или выгружает весь свой экипаж, который сразу же получает возможность атаковать\r\n", quantity: 2));
+            fightEnemyUnits.Add(new unit(name: "БТР", damage: 10, hP: 50, maxHP: 50, techDamage: 10, spritePath: "Спрайты\\Illustrations\\БТР колонна", description: "Способность: загружает в себя 10 юнитов-солдат или выгружает весь свой экипаж, который сразу же получает возможность атаковать\r\n", quantity: 1));
+            fightEnemyUnits.Add(new unit(name: "Солдат СКСМ", damage: 4, hP: 3, maxHP: 3, techDamage: 4, spritePath: "Спрайты\\Illustrations\\Солдаты СКСМ", description: "Здоровье: 25/50\tУрон: 25\tУрон по технике: 25\tКол-во: 25\r\nЭкипаж: 10\r\nСпособность: загружает в себя 10 юнитов-солдат или выгружает весь свой экипаж, который сразу же получает возможность атаковать\r\n", quantity: 2));
+          
+
         }
 
         public void ShowGivenRes()

@@ -89,6 +89,7 @@ GameObject:
   - component: {fileID: 5712175930279042275}
   - component: {fileID: 3268992638888304422}
   - component: {fileID: 2112889033168688196}
+  - component: {fileID: 8839993529191058606}
   m_Layer: 5
   m_Name: "\u0411\u043E\u0435\u0432\u0430\u044F \u043A\u0430\u0440\u0442\u043E\u043D\u043A\u0430"
   m_TagString: Untagged
@@ -195,6 +196,27 @@ MonoBehaviour:
     spritePath: 
     description: 
     quantity: 0
+--- !u!95 &8839993529191058606
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5422160581054165113}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 22b21d66bcb5f664bae9a8992afee0ee, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &5538442607854254934
 GameObject:
   m_ObjectHideFlags: 0

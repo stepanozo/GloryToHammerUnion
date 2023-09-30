@@ -35,6 +35,10 @@ public class BaseOfUnits : MonoBehaviour
     public GameObject BattleRezervObject;
     [SerializeField] Scrollbar BattleReservScrollbar;
     public List<GameObject> BattleRezervUnitsObjects = new List<GameObject>();
+    public GameObject[] BattleUnitObjectsEnemy;
+    public GameObject[] BattleUnitObjectsAlly;
+    [SerializeField] GameObject parentUnitObject;
+
     //Для резерва
 
 
@@ -48,19 +52,22 @@ public class BaseOfUnits : MonoBehaviour
     public List<unit> RezervUnits = new List<unit>();
     public List<GameObject> RezervUnitsObjects = new List<GameObject>();
     public GameObject UnitPrefab;
+    public GameObject BattleUnitPrefab;
     public GameObject AllUnitsRezervObject;
     public GameObject tempUnitObject;
     public GameObject simpleUnitPanel;
     public Text simpleUnitDescription;
     public Text simpleUnitName;
     private CardBehaviour cardScript;
+    private BattleCardBehaviour BattleCardScript;
 
     private void Start()
     {
 
 
         GameSC = GameObject.Find("GameplaySystem").GetComponent<GameMainScript>(); //мб это надо удалить, всё как-то и без него работает
-
+        BattleUnitObjectsAlly = new GameObject[4];
+        BattleUnitObjectsEnemy = new GameObject[4];
      
 
     }
@@ -96,6 +103,90 @@ public class BaseOfUnits : MonoBehaviour
     }*/
 
 
+    public void SpawnUnit(unit SpawnedUnit,Vector2 position, string Side, string villageTag, int numberOfUnit)
+    {
+
+        tempUnitObject = Instantiate(BattleUnitPrefab, position, Quaternion.identity);
+
+        BattleCardScript = tempUnitObject.GetComponent<BattleCardBehaviour>();
+        BattleCardScript.u = SpawnedUnit;
+        tempUnitObject.transform.SetParent(GameObject.Find("Canvas").transform);
+        tempUnitObject.transform.SetParent(parentUnitObject.transform);
+
+        if(Side == "Ally")
+          BattleUnitObjectsAlly[numberOfUnit] = tempUnitObject;
+        else
+            BattleUnitObjectsEnemy[numberOfUnit] = tempUnitObject;
+
+        //Настраиваем иллюстрацию
+        GameObject tempChildObject;
+        tempChildObject = tempUnitObject.transform.Find("Иллюстрация").gameObject;
+        tempChildObject.GetComponent<Image>().sprite = Resources.Load<Sprite>(SpawnedUnit.spritePath);
+
+        //Настраиваем здоровье
+        tempUnitObject.transform.Find("Здоровье").gameObject.transform.Find("Текст").GetComponent<Text>().text = Convert.ToString(SpawnedUnit.HP);
+        tempUnitObject.transform.Find("Урон").gameObject.transform.Find("Текст").GetComponent<Text>().text = Convert.ToString(SpawnedUnit.damage);
+        tempUnitObject.transform.Find("Урон по технике").gameObject.transform.Find("Текст").GetComponent<Text>().text = Convert.ToString(SpawnedUnit.techDamage);
+        tempUnitObject.transform.Find("Кол-во").GetComponent<Text>().text = Convert.ToString(SpawnedUnit.quantity);
+
+        //Включаем анимацию
+        Animator cardAnimator = tempUnitObject.GetComponent<Animator>();
+
+        if(Side == "Ally")
+            cardAnimator.SetBool("GoesFromBot", true);
+        else
+            cardAnimator.SetBool("GoesFromTop", true);
+    }
+
+
+    public void RefreshBattle(string villageTag)
+    {
+
+        switch (GameMainScript.MapSC.VillageDict[villageTag].fightAllyUnits.Count)
+        {
+            case 1:
+                SpawnUnit(GameMainScript.MapSC.VillageDict[villageTag].fightAllyUnits[0], new Vector2(800, -277), "Ally", villageTag, 0);
+                break;
+            case 2:
+                SpawnUnit(GameMainScript.MapSC.VillageDict[villageTag].fightAllyUnits[0], new Vector2((float)644.5, -277), "Ally", villageTag, 0);
+                SpawnUnit(GameMainScript.MapSC.VillageDict[villageTag].fightAllyUnits[1], new Vector2((float)962.2, -277), "Ally", villageTag, 1);
+                break;
+            case 3:
+                SpawnUnit(GameMainScript.MapSC.VillageDict[villageTag].fightAllyUnits[0], new Vector2((float)482.3, -277), "Ally", villageTag, 0);
+                SpawnUnit(GameMainScript.MapSC.VillageDict[villageTag].fightAllyUnits[1], new Vector2((float)800, -277) , "Ally", villageTag, 1);
+                SpawnUnit(GameMainScript.MapSC.VillageDict[villageTag].fightAllyUnits[2], new Vector2((float)1117, -277) , "Ally", villageTag, 2);
+                break;
+            case 4:
+                SpawnUnit(GameMainScript.MapSC.VillageDict[villageTag].fightAllyUnits[0], new Vector2((float)326.8, -277), "Ally", villageTag, 0);
+                SpawnUnit(GameMainScript.MapSC.VillageDict[villageTag].fightAllyUnits[1], new Vector2((float)644.5, -277), "Ally", villageTag, 1);
+                SpawnUnit(GameMainScript.MapSC.VillageDict[villageTag].fightAllyUnits[2], new Vector2((float)962.2, -277), "Ally", villageTag, 2);
+                SpawnUnit(GameMainScript.MapSC.VillageDict[villageTag].fightAllyUnits[3], new Vector2((float)1279.9, -277), "Ally", villageTag, 3);
+                break;
+        }
+
+        switch (GameMainScript.MapSC.VillageDict[villageTag].fightEnemyUnits.Count)
+        {
+            case 1:
+                SpawnUnit(GameMainScript.MapSC.VillageDict[villageTag].fightEnemyUnits[0], new Vector2(800, (float)1719.38), "Enemy", villageTag, 0);
+                break;
+            case 2:
+                SpawnUnit(GameMainScript.MapSC.VillageDict[villageTag].fightEnemyUnits[0], new Vector2((float)644.5, (float)1719.38), "Enemy", villageTag, 0);
+                SpawnUnit(GameMainScript.MapSC.VillageDict[villageTag].fightEnemyUnits[1], new Vector2((float)962.2, (float)1719.38), "Enemy", villageTag, 1);
+                break;
+            case 3:
+                SpawnUnit(GameMainScript.MapSC.VillageDict[villageTag].fightEnemyUnits[0], new Vector2((float)482.3, (float)1719.38), "Enemy", villageTag, 0);
+                SpawnUnit(GameMainScript.MapSC.VillageDict[villageTag].fightEnemyUnits[1], new Vector2((float)800, (float)1719.38), "Enemy", villageTag , 1);
+                SpawnUnit(GameMainScript.MapSC.VillageDict[villageTag].fightEnemyUnits[2], new Vector2((float)1117, (float)1719.38), "Enemy", villageTag, 2);
+                break;
+            case 4:
+                SpawnUnit(GameMainScript.MapSC.VillageDict[villageTag].fightEnemyUnits[0], new Vector2((float)326.8, (float)1719.38), "Enemy", villageTag, 0);
+                SpawnUnit(GameMainScript.MapSC.VillageDict[villageTag].fightEnemyUnits[1], new Vector2((float)644.5, (float)1719.38), "Enemy", villageTag, 1);
+                SpawnUnit(GameMainScript.MapSC.VillageDict[villageTag].fightEnemyUnits[2], new Vector2((float)962.2, (float)1719.38), "Enemy", villageTag, 2);
+                SpawnUnit(GameMainScript.MapSC.VillageDict[villageTag].fightEnemyUnits[3], new Vector2((float)1279.9, (float)1719.38), "Enemy", villageTag, 3);
+                break;
+        }
+
+    }
 
     public void ToTheBattle()
     {
@@ -116,6 +207,7 @@ public class BaseOfUnits : MonoBehaviour
         BattlePanelAnimator.SetBool("PanelOpened", true);
         ButtleReservAnimator.SetBool("RezervOpened", true);
         RefreshRezerv(battle: true); //Обновить резерв именно битвы, а не обычный резерв
+        RefreshBattle(GameMainScript.MapSC.activeVillageTag);
     }
 
     public void exitBattle()
@@ -139,6 +231,21 @@ public class BaseOfUnits : MonoBehaviour
 
         rezervPanel.SetActive(false);
         RefreshRezerv();
+
+        Animator cardAnimator;
+
+        foreach(GameObject g in BattleUnitObjectsAlly)
+        {
+            cardAnimator = g.GetComponent<Animator>();
+            cardAnimator.SetBool("GoesToBot", true);
+        }
+
+        foreach (GameObject g in BattleUnitObjectsEnemy)
+        {
+            cardAnimator = g.GetComponent<Animator>();
+            cardAnimator.SetBool("GoesToTop", true);
+        }
+
     }
 
     public void InitializeUnits()
