@@ -39,6 +39,8 @@ public class BaseOfUnits : MonoBehaviour
     public List<GameObject> BattleRezervUnitsObjects = new List<GameObject>();
     public GameObject[] BattleUnitObjectsEnemy;
     public GameObject[] BattleUnitObjectsAlly;
+    public bool gonnaAttack;
+
 
     //Для резерва
 
@@ -66,7 +68,7 @@ public class BaseOfUnits : MonoBehaviour
     private void Start()
     {
 
-
+        gonnaAttack = false;
         GameSC = GameObject.Find("GameplaySystem").GetComponent<GameMainScript>(); //мб это надо удалить, всё как-то и без него работает
         BattleUnitObjectsAlly = new GameObject[4];
         BattleUnitObjectsEnemy = new GameObject[4];
@@ -203,6 +205,7 @@ public class BaseOfUnits : MonoBehaviour
                 if (GameMainScript.MapSC.VillageDict[villageTag].fightAllyUnits.Count > 3 && BattleUnitObjectsAlly[3] != null) //Последнего юнита двигаем только если он УЖЕ есть.
                     moveUnitX((float)1279.9 - 960, 3);
                 break;
+
         }
         numberOfUnits = numberOfEnemies;
        // numberOfUnits = 1;
@@ -283,25 +286,40 @@ public class BaseOfUnits : MonoBehaviour
 
     }
 
+    public void attackButtonClick()
+    {
+        gonnaAttack = true;
+        //Здесь бы курсор надо заменять на крутой
+    }
+
     public void PlayUnitClick()
     {
         if (ActiveReservUnit.HP == ActiveReservUnit.maxHP && GameMainScript.MapSC.VillageDict[GameMainScript.MapSC.activeVillageTag].fightAllyUnits.Count < 4)
         {
             playUnit(ActiveReservUnit, GameMainScript.MapSC.activeVillageTag);
+            Debug.Log("Количество разыгрываемого юнита это " + ActiveReservUnit.quantity);
             RemoveUnit(ActiveReservUnit.name, ActiveReservUnit.quantity, RezervUnits);
             RefreshRezerv( battle:true);
+            RefreshAllQuantities();
         }
     }
     
-    private void RefreshAllQuantities()
+    public void RefreshAllQuantities()
     {
         for (int i = 0; i < 4; i++)
         {
             //Ставим карточкам такое кол-во, как у самого юнита
-            if (BattleUnitObjectsAlly[i] != null && GameMainScript.MapSC.VillageDict[GameMainScript.MapSC.activeVillageTag].fightAllyUnits[i] != null) //если такой юнит и такой объект вообще есть
+            if (BattleUnitObjectsAlly[i] != null && GameMainScript.MapSC.VillageDict[GameMainScript.MapSC.activeVillageTag].fightAllyUnits[i] != null)
+                 //если такой юнит и такой объект вообще есть
             {
                 BattleUnitObjectsAlly[i].transform.Find("Кол-во").GetComponent<Text>().text = Convert.ToString(GameMainScript.MapSC.VillageDict[GameMainScript.MapSC.activeVillageTag].fightAllyUnits[i].quantity);
+                BattleUnitObjectsAlly[i].transform.Find("Здоровье").transform.Find("Текст").GetComponent<Text>().text = Convert.ToString(GameMainScript.MapSC.VillageDict[GameMainScript.MapSC.activeVillageTag].fightAllyUnits[i].HP);
+            }
+
+            if(BattleUnitObjectsEnemy[i] != null && GameMainScript.MapSC.VillageDict[GameMainScript.MapSC.activeVillageTag].fightEnemyUnits[i] != null)
+            {
                 BattleUnitObjectsEnemy[i].transform.Find("Кол-во").GetComponent<Text>().text = Convert.ToString(GameMainScript.MapSC.VillageDict[GameMainScript.MapSC.activeVillageTag].fightEnemyUnits[i].quantity);
+                BattleUnitObjectsEnemy[i].transform.Find("Здоровье").transform.Find("Текст").GetComponent<Text>().text = Convert.ToString(GameMainScript.MapSC.VillageDict[GameMainScript.MapSC.activeVillageTag].fightEnemyUnits[i].HP);
             }
         }
     }
@@ -363,6 +381,7 @@ public class BaseOfUnits : MonoBehaviour
                         RefreshAllQuantities();
                     break;
             }
+            RefreshAllQuantities();
         }
     }
 
@@ -700,13 +719,17 @@ public class BaseOfUnits : MonoBehaviour
         {
             if (u.name == addedUnit.name && u.HP == addedUnit.HP)
             {
+                Debug.Log("этого юнито БЫЛО до добавления " + u.quantity);
                 u.quantity += addedUnit.quantity;
                 flg = false;
                 break;
             }
         }
         if (flg)
+        {
+            Debug.Log("ПРЯМ ЩА ДОБАВЛЯЕМ ЮНИТОВ " + addedUnit.quantity);
             unitList.Add(addedUnit);
+        }
     }
 
    /* public void AddUnit(unit addedUnit, unit[] unitArray)

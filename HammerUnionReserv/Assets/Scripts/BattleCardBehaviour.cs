@@ -8,6 +8,7 @@ using UnityEngine.UI;
 using System;
 using UnityEngine.EventSystems;
 using System.Runtime;
+using System.Linq;
 
 public class BattleCardBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
@@ -21,6 +22,7 @@ public class BattleCardBehaviour : MonoBehaviour, IPointerEnterHandler, IPointer
     public float v;
     public float countTime;
 
+    public static unit activeBattleUnit;
 
 
     // Start is called before the first frame update
@@ -77,25 +79,104 @@ public class BattleCardBehaviour : MonoBehaviour, IPointerEnterHandler, IPointer
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        //Настраиваем иллюстрацию
-        //GameMainScript.BaseOfUnitsSC.CardOnPanel
-        GameObject tempUnitObject = GameMainScript.BaseOfUnitsSC.CardOnPanel;
-        GameObject tempChildObject = tempUnitObject.transform.Find("Иллюстрация").gameObject;
-        tempChildObject.GetComponent<Image>().sprite = Resources.Load<Sprite>(u.spritePath);
 
-        //Настраиваем здоровье
-        tempUnitObject.transform.Find("Здоровье").gameObject.transform.Find("Текст").GetComponent<Text>().text = Convert.ToString(u.HP);
-        tempUnitObject.transform.Find("Урон").gameObject.transform.Find("Текст").GetComponent<Text>().text = Convert.ToString(u.damage);
-        tempUnitObject.transform.Find("Урон по технике").gameObject.transform.Find("Текст").GetComponent<Text>().text = Convert.ToString(u.techDamage);
-        tempUnitObject.transform.Find("Кол-во").GetComponent<Text>().text = Convert.ToString(u.quantity);
+        if (!GameMainScript.BaseOfUnitsSC.gonnaAttack)
+        {
+            //Настраиваем иллюстрацию
+            //GameMainScript.BaseOfUnitsSC.CardOnPanel
+            GameObject tempUnitObject = GameMainScript.BaseOfUnitsSC.CardOnPanel;
+            GameObject tempChildObject = tempUnitObject.transform.Find("Иллюстрация").gameObject;
+            tempChildObject.GetComponent<Image>().sprite = Resources.Load<Sprite>(u.spritePath);
 
-        GameMainScript.BaseOfUnitsSC.BigUnitName.text = u.name;
-        GameMainScript.BaseOfUnitsSC.BigUnitDescription.text = u.description;
+            //Настраиваем здоровье
+            tempUnitObject.transform.Find("Здоровье").gameObject.transform.Find("Текст").GetComponent<Text>().text = Convert.ToString(u.HP);
+            tempUnitObject.transform.Find("Урон").gameObject.transform.Find("Текст").GetComponent<Text>().text = Convert.ToString(u.damage);
+            tempUnitObject.transform.Find("Урон по технике").gameObject.transform.Find("Текст").GetComponent<Text>().text = Convert.ToString(u.techDamage);
+            tempUnitObject.transform.Find("Кол-во").GetComponent<Text>().text = Convert.ToString(u.quantity);
 
-        GameMainScript.BaseOfUnitsSC.buttonAbility.SetActive(true);
-        GameMainScript.BaseOfUnitsSC.buttonAttack.SetActive(true);
-        GameMainScript.BaseOfUnitsSC.buttonRetreat.SetActive(true);
-        GameMainScript.BaseOfUnitsSC.buttonPlayIt.SetActive(false);
+            GameMainScript.BaseOfUnitsSC.BigUnitName.text = u.name;
+            GameMainScript.BaseOfUnitsSC.BigUnitDescription.text = u.description;
+
+            GameMainScript.BaseOfUnitsSC.buttonAbility.SetActive(true);
+            GameMainScript.BaseOfUnitsSC.buttonAttack.SetActive(true);
+            GameMainScript.BaseOfUnitsSC.buttonRetreat.SetActive(true);
+            GameMainScript.BaseOfUnitsSC.buttonPlayIt.SetActive(false);
+
+            activeBattleUnit = u;
+        }
+        else
+        {
+            Debug.Log("Атакуем его");
+            int damage = u.isTech ? activeBattleUnit.techDamage : activeBattleUnit.damage;
+            damage *= activeBattleUnit.quantity;
+            Debug.Log("Умножаем дамаг юнита на " + activeBattleUnit.quantity);
+            if(damage >= u.maxHP * (u.quantity-1) + u.HP)
+            {
+                Debug.Log("Уничтожили его");
+
+
+                //ЗДЕСЬ НАЧИНАЕТСЯ УНИЧТОЖЕНИЕ ПРОТИВНИКА
+                Animator cardAnimator;
+                u.quantity = 0;
+                for(int i =0; i< 4; i++)
+                {
+                    if (GameMainScript.MapSC.VillageDict[GameMainScript.MapSC.activeVillageTag].fightEnemyUnits[i].quantity <= 0) //ищем этого юнита, у которого кончилось кол-во
+                    {
+                        Debug.Log("Убрали противника"); ;
+                        cardAnimator = GameMainScript.BaseOfUnitsSC.BattleUnitObjectsEnemy[i].GetComponent<Animator>();
+                        cardAnimator.SetBool("GoesToTop", true);
+                        GameMainScript.MapSC.VillageDict[GameMainScript.MapSC.activeVillageTag].fightEnemyUnits.RemoveAt(i); //это раньше было внизу, после цикла
+                       
+                        int j = i;
+                        while (j + 1 < 4)
+                        {
+                            GameMainScript.BaseOfUnitsSC.BattleUnitObjectsEnemy[j] = GameMainScript.BaseOfUnitsSC.BattleUnitObjectsEnemy[j + 1];
+                            j++;
+                        }
+
+                        GameMainScript.BaseOfUnitsSC.moveUnitsLeft(GameMainScript.MapSC.activeVillageTag,
+                  GameMainScript.MapSC.VillageDict[GameMainScript.MapSC.activeVillageTag].fightAllyUnits.Count,
+                  GameMainScript.MapSC.VillageDict[GameMainScript.MapSC.activeVillageTag].fightEnemyUnits.Count);
+
+                        //GameMainScript.BaseOfUnitsSC.BattleUnitObjectsEnemy[j + 1] = null;
+
+                        Debug.Log(GameMainScript.MapSC.VillageDict[GameMainScript.MapSC.activeVillageTag].fightEnemyUnits.Count + " - именно столько врагов осталось в этой деревне");
+                        //GameMainScript.BaseOfUnitsSC.moveUnitsLeft()
+
+                        //this.DestroyThis();
+                        break;
+                    }
+                }
+               
+
+                //ЗДЕСЬ ЗАКАНЧИВАЕТСЯ УНИЧТОЖЕНИЕ
+            }
+            else 
+            {
+                Debug.Log("Наносим ему урон");
+                while (damage > u.maxHP && u.quantity > 1)
+                {
+                    u.quantity--;
+                    damage -= u.maxHP;
+                }
+                if(damage >= u.HP)
+                {
+                    u.quantity--;
+                    damage -= u.HP;
+                    u.HP = u.maxHP - damage;
+                }
+                else
+                    u.HP -= damage;
+
+                //if(u.HP<0)
+                //if(u.HP <0)
+
+                GameMainScript.BaseOfUnitsSC.RefreshAllQuantities(); //тут обновляем всё здоровье и кол-во всех юнитов
+                
+
+            }
+            GameMainScript.BaseOfUnitsSC.gonnaAttack = false;
+        }
     }
 
 

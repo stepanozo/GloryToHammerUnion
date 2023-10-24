@@ -216,12 +216,9 @@ public class GameMainScript : MonoBehaviour
             today = 1;
 
             //Здесь добавить юнита попробуем
-            BaseOfUnitsSC.AddUnit(new unit(name: "Солдат СКСМ", damage: 4, hP: 3, maxHP: 3, techDamage: 4, spritePath: "Спрайты\\Illustrations\\Солдаты СКСМ", description: "Здоровье: 25/50\tУрон: 25\tУрон по технике: 25\tКол-во: 25\r\nЭкипаж: 10\r\nСпособность: загружает в себя 10 юнитов-солдат или выгружает весь свой экипаж, который сразу же получает возможность атаковать\r\n", quantity: 2), BaseOfUnitsSC.RezervUnits);
-            BaseOfUnitsSC.AddUnit(new unit(name: "БТР", damage: 10, hP: 50, maxHP: 50, techDamage: 10, spritePath: "Спрайты\\Illustrations\\БТР колонна", description: "Способность: загружает в себя 10 юнитов-солдат или выгружает весь свой экипаж, который сразу же получает возможность атаковать\r\n", quantity: 1), BaseOfUnitsSC.RezervUnits);
+            BaseOfUnitsSC.AddUnit(new unit(name: "Солдат СКСМ", damage: 4, hP: 3, maxHP: 3, techDamage: 4, spritePath: "Спрайты\\Illustrations\\Солдаты СКСМ", description: "Здоровье: 25/50\tУрон: 25\tУрон по технике: 25\tКол-во: 25\r\nЭкипаж: 10\r\nСпособность: загружает в себя 10 юнитов-солдат или выгружает весь свой экипаж, который сразу же получает возможность атаковать\r\n", quantity: 4), BaseOfUnitsSC.RezervUnits);
+            BaseOfUnitsSC.AddUnit(new unit(name: "БТР", damage: 10, hP: 50, maxHP: 50, techDamage: 10, spritePath: "Спрайты\\Illustrations\\БТР колонна", description: "Способность: загружает в себя 10 юнитов-солдат или выгружает весь свой экипаж, который сразу же получает возможность атаковать\r\n", quantity: 2), BaseOfUnitsSC.RezervUnits);
             BaseOfUnitsSC.AddUnit(new unit(name: "Солдат СКСМ", damage: 4, hP: 3, maxHP: 3, techDamage: 4, spritePath: "Спрайты\\Illustrations\\Солдаты СКСМ", description: "ASD", quantity: 2), BaseOfUnitsSC.RezervUnits);
-            BaseOfUnitsSC.AddUnit(new unit(name: "БТР", damage: 10, hP: 50, maxHP: 50, techDamage: 10, spritePath: "Спрайты\\Illustrations\\БТР колонна", description: "ASD", quantity: 1), BaseOfUnitsSC.RezervUnits);
-            BaseOfUnitsSC.AddUnit(new unit(name: "БТР", damage: 10, hP: 35, maxHP: 50, techDamage: 10, spritePath: "Спрайты\\Illustrations\\БТР колонна", description: "ASD", quantity: 1), BaseOfUnitsSC.RezervUnits);
-            BaseOfUnitsSC.AddUnit(new unit(name: "Солдат СКСМ", damage: 4, hP: 1, maxHP: 3, techDamage: 4, spritePath: "Спрайты\\Illustrations\\Солдаты СКСМ", description: "ASD", quantity: 3), BaseOfUnitsSC.RezervUnits);
             //BaseOfUnitsSC.RefreshRezerv();
 
         }
