@@ -6,10 +6,10 @@ using UnityEngine.UIElements;
 public class MovingObjects : MonoBehaviour
 {
 
-}
 
 
-    /* Это способ передвижения объектов, о котором мы пока предпочтём забыть
+
+
 
     public Vector2 startPosition;
     public Vector2 endPosition;
@@ -21,21 +21,21 @@ public class MovingObjects : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        startPosition = infoCalendarObject.transform.position;
-        endPosition = startPosition + new Vector2(1500f, 0);
-        infoCalendarObject.transform.position = startPosition;
+       // startPosition = infoCalendarObject.transform.position;
+       // endPosition = startPosition + new Vector2(1500f, 0);
+        //infoCalendarObject.transform.position = startPosition;
     }
 
     // Update is called once per frame
-    void Update()
+    /*void Update()
     {
 
-        infoCalendarObject.transform.position = Vector2.Lerp(startPosition, endPosition, progress);
+        infoCalendarObject.transform.position = Vector2(startPosition, endPosition, progress);
         progress += step;
         step *= 1.01f;
         //Короче такая шняга никуда не пойдёт.
   
 
-    }
+    }*/
 }
-    */
+    

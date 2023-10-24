@@ -39,6 +39,7 @@ public class CardBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        GameMainScript.BaseOfUnitsSC.ActiveReservUnit = u; //Говорим, что теперь u - активный юнит (тот, что отображается сейчас на панели)
         //Настраиваем иллюстрацию
         //GameMainScript.BaseOfUnitsSC.CardOnPanel
         GameObject tempUnitObject = GameMainScript.BaseOfUnitsSC.CardOnPanel;

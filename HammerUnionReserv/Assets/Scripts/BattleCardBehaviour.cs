@@ -7,11 +7,21 @@ using UnityEngine.UI;
 //using TMPro.EditorUtilities;
 using System;
 using UnityEngine.EventSystems;
+using System.Runtime;
 
 public class BattleCardBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
 
     public unit u;
+    public Vector2 startPosition;
+    public Vector2 endPosition;
+    public bool moves = false;
+    public float timer = 3.0f;
+    public float lerp = 0;
+    public float v;
+    public float countTime;
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -19,10 +29,45 @@ public class BattleCardBehaviour : MonoBehaviour, IPointerEnterHandler, IPointer
         
     }
 
+    double distanceToDestination()
+    {
+        return Math.Sqrt(Math.Pow(transform.position.x - endPosition.x, 2) + Math.Pow(transform.position.y - endPosition.y, 2));
+    }
+
+    double fullDistance()
+    {
+        return Math.Sqrt(Math.Pow(startPosition.x - endPosition.x, 2) + Math.Pow(startPosition.y - endPosition.y, 2));
+    }
+
     // Update is called once per frame
     void Update()
     {
+        if (moves)
+        {
+            countTime += Time.deltaTime;
+            if(lerp <0.5f)
+                lerp = 0.4f * countTime*countTime;
+        }
+
+      
+
+        if (lerp/ timer >= 1) //когда надо окончить движение
+           moves = false;
+
+        if(moves)
+        {
+            //  Debug.Log("it moves");
+           // Debug.Log("Эндовая позишн " + endPosition);
+            this.transform.localPosition = Vector2.Lerp(startPosition, endPosition, lerp/timer);
+        }
         
+    }
+
+    public void MoveUnit()
+    {
+       // startPosition = this.transform.position;
+       // endPosition = (Vector2)transform.position + new Vector2(100, 100);
+       // moves = true;
     }
 
 
