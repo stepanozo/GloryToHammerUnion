@@ -186,9 +186,15 @@ namespace Assembly_CSharp
 
 
 
+    internal class battlePoint
+    {
+        public List<unit> fightAllyUnits;
+        public List<unit> fightEnemyUnits;
+    }
+
 
     [Serializable]
-    internal class village
+    internal class village: battlePoint
     {
         public double[] incomeCoefficient;
         public int[] totalResources;
@@ -197,8 +203,7 @@ namespace Assembly_CSharp
         public int population;
         public List<unit> policeUnits;
         public double revolutionChance;
-        public List<unit> fightAllyUnits;
-        public List<unit> fightEnemyUnits;
+        
 
         public int SumRes
         {
@@ -528,7 +533,7 @@ namespace Assembly_CSharp
     }
 
     [Serializable]
-    internal abstract class mapArea
+    internal abstract class mapArea : battlePoint
     {
         public bool[] buildings = new bool[4];
         public string name;

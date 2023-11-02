@@ -76,6 +76,7 @@ internal class Map : MonoBehaviour
 
     public string activeAreaTag; //tag того района, который сейчас на экране
     public string activeVillageTag; //tag той деревни, которая сейчас на экране
+    public string activeBattlePointTag; //tag той боевой точки, которая сейчас на экране
     public buildings activeBuildingOnScreen;
 
     public Dictionary<string, mapArea> MapAreaDict = new Dictionary<string, mapArea>(); //Словарь всех районов
@@ -83,6 +84,7 @@ internal class Map : MonoBehaviour
     public Dictionary<string, emptyArea> EmptyAreaDict = new Dictionary<string, emptyArea>(); //Словарь пустых районов
 
     public Dictionary<string, village> VillageDict = new Dictionary<string, village>(); //Словарь всех деревень
+    public Dictionary<string, battlePoint> battlePointsDict = new Dictionary<string, battlePoint>(); //Словарь всех деревень
 
 
 
@@ -99,6 +101,7 @@ internal class Map : MonoBehaviour
             InitializeAreas();      //Создание стартовых районов
             InitializeBuildings();  //Задание описания зданий, которые можно построить
             InitializeVillages();    //Создание деревень
+            InitializeBattlePoints();
         }
         else
         {
@@ -211,6 +214,34 @@ internal class Map : MonoBehaviour
         VillageDict[Convert.ToString(11)] = new village(name: "Малое Безымянное", population: 784, provision: 5, medicine: 3, materials: 8, budget: 4, provisionIncome: 0.008, medicineIncome: 0.006, materialsIncome: 0.004, budgetIncome: 0.002);
     }
 
+    public void InitializeBattlePoints()
+    {
+        battlePointsDict["blokpostTop"] = MapAreaDict["blokpostTop"];
+        battlePointsDict["blokpostLeft"] = MapAreaDict["blokpostLeft"];
+        battlePointsDict["blokpostRight"] = MapAreaDict["blokpostRight"];
+        battlePointsDict["blokpostBottom"] = MapAreaDict["blokpostBottom"];
+        battlePointsDict["emptyTop"] = EmptyAreaDict["emptyTop"];
+        battlePointsDict["emptyBottom"] = EmptyAreaDict["emptyBottom"];
+        battlePointsDict["square"] = TownAreaDict["square"];
+        battlePointsDict["workLeft"] = TownAreaDict["workLeft"];
+        battlePointsDict["workRight"] = TownAreaDict["workRight"];
+        battlePointsDict["stock"] = TownAreaDict["stock"];
+        battlePointsDict["factory"] = MapAreaDict["factory"];
+
+        battlePointsDict["0"] = VillageDict["0"];
+        battlePointsDict["1"] = VillageDict["1"];
+        battlePointsDict["2"] = VillageDict["2"];
+        battlePointsDict["3"] = VillageDict["3"];
+        battlePointsDict["4"] = VillageDict["4"];
+        battlePointsDict["5"] = VillageDict["5"];
+        battlePointsDict["6"] = VillageDict["6"];
+        battlePointsDict["7"] = VillageDict["7"];
+        battlePointsDict["8"] = VillageDict["8"];
+        battlePointsDict["9"] = VillageDict["9"];
+        battlePointsDict["10"] = VillageDict["10"];
+        battlePointsDict["11"] = VillageDict["11"];
+    }
+
     public void ChangeMap(int newTypeMap)
     {
         if (newTypeMap == 1)
@@ -273,6 +304,7 @@ internal class Map : MonoBehaviour
         if (activeVillageTag != "")
             VillageDict[activeVillageTag].hideVillage(); //скрываем тот район, который был активным
         activeVillageTag = Convert.ToString(villageTag);
+        activeBattlePointTag = activeVillageTag;
         villageName.text = VillageDict[Convert.ToString(villageTag)].name;
         VillageDict[Convert.ToString(villageTag)].showVillage();
     }
@@ -282,6 +314,7 @@ internal class Map : MonoBehaviour
         if(activeAreaTag != "")
             MapAreaDict[activeAreaTag].hideArea(); //скрываем тот район, который был активным
         activeAreaTag = areaTag;
+        activeBattlePointTag = areaTag;
         areaName.text = MapAreaDict[areaTag].name;
         areaDescription.text = MapAreaDict[areaTag].description;
         MapAreaDict[areaTag].showArea();

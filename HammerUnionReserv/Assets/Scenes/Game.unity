@@ -16435,6 +16435,7 @@ MonoBehaviour:
   SlotsRecoursesGivenVillage: 
   activeAreaTag: 
   activeVillageTag: 
+  activeBattlePointTag: 
   activeBuildingOnScreen: 0
 --- !u!4 &1378397325
 Transform:
@@ -21196,6 +21197,7 @@ MonoBehaviour:
   BattleUnitObjectsEnemy: []
   BattleUnitObjectsAlly: []
   gonnaAttack: 0
+  ControlCardRezerv: {fileID: 360160723}
   reservScrollbar: {fileID: 235832482}
   rezervPanel: {fileID: 278264185}
   RezervUnits: []
@@ -27228,11 +27230,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1721690281758519214, guid: 74f6a691089edde4aa0e30dfa9a0e7be, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 1.9662018
+      value: 733.81
       objectReference: {fileID: 0}
     - target: {fileID: 1721690281758519214, guid: 74f6a691089edde4aa0e30dfa9a0e7be, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 2715.5234
+      value: 280.523
       objectReference: {fileID: 0}
     - target: {fileID: 1721690281758519214, guid: 74f6a691089edde4aa0e30dfa9a0e7be, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -27249,6 +27251,10 @@ PrefabInstance:
     - target: {fileID: 2370814107173026398, guid: 74f6a691089edde4aa0e30dfa9a0e7be, type: 3}
       propertyPath: m_Name
       value: "\u041A\u0430\u0440\u0442\u043E\u043D\u043A\u0430"
+      objectReference: {fileID: 0}
+    - target: {fileID: 2370814107173026398, guid: 74f6a691089edde4aa0e30dfa9a0e7be, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}
