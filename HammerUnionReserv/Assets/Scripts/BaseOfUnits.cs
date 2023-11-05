@@ -41,10 +41,18 @@ public class BaseOfUnits : MonoBehaviour
     public GameObject[] BattleUnitObjectsAlly;
     public bool gonnaAttack;
 
+    [SerializeField]
+    GameObject[] enemyExamples;
+
+    [SerializeField]
+    GameObject[] allyExamples;
+
 
     //Для резерва
 
+
     [SerializeField] GameObject ControlCardRezerv;
+    [SerializeField] GameObject ControlCardRezerv2;
 
     [SerializeField] Scrollbar reservScrollbar;
     [SerializeField] GameObject rezervPanel;
@@ -124,8 +132,10 @@ public class BaseOfUnits : MonoBehaviour
 
 
         tempUnitObject.transform.SetParent(GameObject.Find("Canvas").transform);
+        tempUnitObject.transform.SetParent(GameObject.Find("Юниты союзники").transform);
+        tempUnitObject.transform.localScale = new Vector3(1f, 1f, 1f);
 
-        if(Side == "Ally")
+        if (Side == "Ally")
           BattleUnitObjectsAlly[numberOfUnit] = tempUnitObject;
         else
             BattleUnitObjectsEnemy[numberOfUnit] = tempUnitObject;
@@ -244,48 +254,49 @@ public class BaseOfUnits : MonoBehaviour
 
     public void RefreshBattle(string battlePointTag)
     {
+        Debug.Log(allyExamples.Length);
 
         switch (GameMainScript.MapSC.battlePointsDict[battlePointTag].fightAllyUnits.Count)
         {
             case 1:
-                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightAllyUnits[0], new Vector2(800, -277), "Ally", battlePointTag, 0);
+                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightAllyUnits[0], allyExamples[3].transform.position, "Ally", battlePointTag, 0);
                 break;
             case 2:
-                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightAllyUnits[0], new Vector2((float)644.5, -277 - 89 - 104.29f), "Ally", battlePointTag, 0);
-                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightAllyUnits[1], new Vector2((float)962.2, -277 - 89 - 104.29f), "Ally", battlePointTag, 1);
+                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightAllyUnits[0], allyExamples[2].transform.position, "Ally", battlePointTag, 0);
+                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightAllyUnits[1], allyExamples[4].transform.position, "Ally", battlePointTag, 1);
                 break;
             case 3:
-                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightAllyUnits[0], new Vector2((float)482.3, -277 - 89 - 104.29f), "Ally", battlePointTag, 0);
-                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightAllyUnits[1], new Vector2((float)800, -277 - 89 - 104.29f) , "Ally", battlePointTag, 1);
-                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightAllyUnits[2], new Vector2((float)1117, -277 - 89 - 104.29f) , "Ally", battlePointTag, 2);
+                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightAllyUnits[0], allyExamples[1].transform.position, "Ally", battlePointTag, 0);
+                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightAllyUnits[1], allyExamples[3].transform.position , "Ally", battlePointTag, 1);
+                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightAllyUnits[2], allyExamples[5].transform.position , "Ally", battlePointTag, 2);
                 break;
             case 4:
-                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightAllyUnits[0], new Vector2((float)326.8, -277 - 89-104.29f), "Ally", battlePointTag, 0);
-                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightAllyUnits[1], new Vector2((float)-315.5+ 960, -277 - 89 - 104.29f), "Ally", battlePointTag, 1);
-                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightAllyUnits[2], new Vector2((float)2.200073 + 960, -277 - 89 - 104.29f), "Ally", battlePointTag, 2);
-                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightAllyUnits[3], new Vector2((float)319.9 + 960, -277 - 89 - 104.29f), "Ally", battlePointTag, 3);
+                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightAllyUnits[0], allyExamples[0].transform.position, "Ally", battlePointTag, 0);
+                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightAllyUnits[1], allyExamples[2].transform.position, "Ally", battlePointTag, 1);
+                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightAllyUnits[2], allyExamples[4].transform.position, "Ally", battlePointTag, 2);
+                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightAllyUnits[3], allyExamples[6].transform.position, "Ally", battlePointTag, 3);
                 break;
         }
 
         switch (GameMainScript.MapSC.battlePointsDict[battlePointTag].fightEnemyUnits.Count)
         {
             case 1:
-                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightEnemyUnits[0], new Vector2(800, (float)1719.38), "Enemy", battlePointTag, 0);
+                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightEnemyUnits[0], enemyExamples[3].transform.position, "Enemy", battlePointTag, 0);
                 break;
             case 2:
-                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightEnemyUnits[0], new Vector2((float)644.5, (float)1719.38 - 89 - 104.29f), "Enemy", battlePointTag, 0);
-                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightEnemyUnits[1], new Vector2((float)962.2, (float)1719.38 - 89 - 104.29f), "Enemy", battlePointTag, 1);
+                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightEnemyUnits[0], enemyExamples[2].transform.position, "Enemy", battlePointTag, 0);
+                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightEnemyUnits[1], enemyExamples[4].transform.position, "Enemy", battlePointTag, 1);
                 break;
             case 3:
-                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightEnemyUnits[0], new Vector2((float)482.3, (float)1719.38 - 89 - 104.29f), "Enemy", battlePointTag, 0);
-                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightEnemyUnits[1], new Vector2((float)800, (float)1719.38 - 89 - 104.29f), "Enemy", battlePointTag , 1);
-                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightEnemyUnits[2], new Vector2((float)1117, (float)1719.38 - 89 - 104.29f), "Enemy", battlePointTag, 2);
+                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightEnemyUnits[0], enemyExamples[1].transform.position, "Enemy", battlePointTag, 0);
+                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightEnemyUnits[1], enemyExamples[3].transform.position, "Enemy", battlePointTag , 1);
+                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightEnemyUnits[2], enemyExamples[5].transform.position, "Enemy", battlePointTag, 2);
                 break;
             case 4:
-                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightEnemyUnits[0], new Vector2((float)326.8, (float)1719.38 - 89 - 104.29f), "Enemy", battlePointTag, 0);
-                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightEnemyUnits[1], new Vector2((float)644.5, (float)1719.38 - 89 - 104.29f), "Enemy", battlePointTag, 1);
-                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightEnemyUnits[2], new Vector2((float)962.2, (float)1719.38 - 89 - 104.29f), "Enemy", battlePointTag, 2);
-                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightEnemyUnits[3], new Vector2((float)1279.9, (float)1719.38 - 89 - 104.29f), "Enemy", battlePointTag, 3);
+                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightEnemyUnits[0], enemyExamples[0].transform.position, "Enemy", battlePointTag, 0);
+                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightEnemyUnits[1], enemyExamples[2].transform.position, "Enemy", battlePointTag, 1);
+                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightEnemyUnits[2], enemyExamples[4].transform.position, "Enemy", battlePointTag, 2);
+                SpawnUnit(GameMainScript.MapSC.battlePointsDict[battlePointTag].fightEnemyUnits[3], enemyExamples[6].transform.position, "Enemy", battlePointTag, 3);
                 break;
         }
 
@@ -345,7 +356,7 @@ public class BaseOfUnits : MonoBehaviour
                     if (GameMainScript.MapSC.battlePointsDict[battlePointTag].fightAllyUnits.Count > controlNumberOfUnits) //если кол-во карточек изменилось, то тогда сдвигаем юнитов и спауним новую карточку. Ведь юниты могут просто сплюсоваться, тогда ничего двигать и спавнить не надо.
                     {
                         moveUnitsLeft(battlePointTag, GameMainScript.MapSC.battlePointsDict[battlePointTag].fightAllyUnits.Count, GameMainScript.MapSC.battlePointsDict[battlePointTag].fightEnemyUnits.Count);
-                        SpawnUnit(u, new Vector2(800, -277), "Ally", battlePointTag, 0);
+                        SpawnUnit(u, allyExamples[3].transform.position, "Ally", battlePointTag, 0);
 
                     }
                     else
@@ -359,7 +370,7 @@ public class BaseOfUnits : MonoBehaviour
                     if (GameMainScript.MapSC.battlePointsDict[battlePointTag].fightAllyUnits.Count > controlNumberOfUnits)
                     {
                         moveUnitsLeft(battlePointTag, controlNumberOfUnits+1, GameMainScript.MapSC.battlePointsDict[battlePointTag].fightEnemyUnits.Count);
-                        SpawnUnit(u, new Vector2((float)962.2, -277 - 89 - 104.29f), "Ally", battlePointTag, 1);
+                        SpawnUnit(u, allyExamples[4].transform.position, "Ally", battlePointTag, 1);
                     }
                     else
                         RefreshAllQuantities();
@@ -370,7 +381,7 @@ public class BaseOfUnits : MonoBehaviour
                     if (GameMainScript.MapSC.battlePointsDict[battlePointTag].fightAllyUnits.Count > controlNumberOfUnits)
                     {
                         moveUnitsLeft(battlePointTag, controlNumberOfUnits+1, GameMainScript.MapSC.battlePointsDict[battlePointTag].fightEnemyUnits.Count);
-                        SpawnUnit(u, new Vector2((float)1117, -277 - 89 - 104.29f), "Ally", battlePointTag, 2);
+                        SpawnUnit(u, allyExamples[5].transform.position, "Ally", battlePointTag, 2);
                     }
                     else
                         RefreshAllQuantities();
@@ -380,7 +391,7 @@ public class BaseOfUnits : MonoBehaviour
                     if (GameMainScript.MapSC.battlePointsDict[battlePointTag].fightAllyUnits.Count > controlNumberOfUnits) 
                     {
                         moveUnitsLeft(battlePointTag, GameMainScript.MapSC.battlePointsDict[battlePointTag].fightAllyUnits.Count, GameMainScript.MapSC.battlePointsDict[battlePointTag].fightEnemyUnits.Count);
-                        SpawnUnit(u, new Vector2((float)319.9 + 960, -277 - 89 - 104.29f), "Ally", battlePointTag, 3);
+                        SpawnUnit(u, allyExamples[6].transform.position, "Ally", battlePointTag, 3);
                     }
                     else
                         RefreshAllQuantities();
@@ -499,16 +510,16 @@ public class BaseOfUnits : MonoBehaviour
         }
 
         float yCard;
-        if (unitObjects.Count > 0)
+       /* if (unitObjects.Count > 0)
         {
             unitObjects[0].transform.SetParent(null);
             //RezervUnitsObjects[0].transform.SetParent(null);
             yCard = unitObjects[0].transform.position.y;
         }
-        else
-        {
-            yCard = 911.2f;
-        }
+        else*/
+      //  {
+            yCard = ControlCardRezerv.transform.position.y;
+       // }
         ClearRezerv(battle);
         GameObject tempChildObject;
 
@@ -519,6 +530,7 @@ public class BaseOfUnits : MonoBehaviour
             //1691-730 = 961
             Debug.Log("позиция резерва " + panel.transform.position.x);
             tempUnitObject = Instantiate(UnitPrefab, new Vector2(panel.transform.position.x, yCard), Quaternion.identity);
+            
 
             
             cardScript = tempUnitObject.GetComponent<CardBehaviour>();
@@ -536,9 +548,11 @@ public class BaseOfUnits : MonoBehaviour
             tempUnitObject.transform.Find("Урон").gameObject.transform.Find("Текст").GetComponent<Text>().text = Convert.ToString(u.damage);
             tempUnitObject.transform.Find("Урон по технике").gameObject.transform.Find("Текст").GetComponent<Text>().text = Convert.ToString(u.techDamage);
             tempUnitObject.transform.Find("Кол-во").GetComponent<Text>().text = Convert.ToString(u.quantity);
+            tempUnitObject.transform.localScale = new Vector3(1f, 1f, 1f);
+            Debug.Log("Размер карточки " + tempUnitObject.transform.localScale);
 
-
-            yCard -= 2715.523f - 2435f;
+            // yCard -= 2715.523f - 2435f;
+            yCard -= ControlCardRezerv.transform.position.y - ControlCardRezerv2.transform.position.y;
 
         }
 
