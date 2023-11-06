@@ -46,6 +46,8 @@ public class BaseOfUnits : MonoBehaviour
 
     [SerializeField]
     GameObject[] allyExamples;
+    public
+    GameObject ShpaginPrefab;
 
 
     //Для резерва

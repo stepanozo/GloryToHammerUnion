@@ -23,6 +23,7 @@ public class BattleCardBehaviour : MonoBehaviour, IPointerEnterHandler, IPointer
     public float countTime;
 
     public static unit activeBattleUnit;
+    public static Transform activeBattleUnitTransform;
 
 
     // Start is called before the first frame update
@@ -80,7 +81,7 @@ public class BattleCardBehaviour : MonoBehaviour, IPointerEnterHandler, IPointer
     public void OnPointerClick(PointerEventData eventData)
     {
 
-        if (!GameMainScript.BaseOfUnitsSC.gonnaAttack)
+        if (!GameMainScript.BaseOfUnitsSC.gonnaAttack) //Если выбираем юнита
         {
             //Настраиваем иллюстрацию
             //GameMainScript.BaseOfUnitsSC.CardOnPanel
@@ -103,19 +104,48 @@ public class BattleCardBehaviour : MonoBehaviour, IPointerEnterHandler, IPointer
             GameMainScript.BaseOfUnitsSC.buttonPlayIt.SetActive(false);
 
             activeBattleUnit = u;
+            activeBattleUnitTransform = this.transform;
         }
-        else
+        else //Если атакуем юнита
         {
             Debug.Log("Атакуем его");
             int damage = u.isTech ? activeBattleUnit.techDamage : activeBattleUnit.damage;
             damage *= activeBattleUnit.quantity;
             Debug.Log("Умножаем дамаг юнита на " + activeBattleUnit.quantity);
-            if(damage >= u.maxHP * (u.quantity-1) + u.HP)
+
+            GameObject tempShpagin = Instantiate(GameMainScript.BaseOfUnitsSC.ShpaginPrefab, activeBattleUnitTransform.position, Quaternion.identity, GameObject.Find("Юниты союзники").transform);//спавним на ту карточку которая и атакует.
+            //tempShpagin.transform.rotation = Quaternion.Euler(tempShpagin.transform.rotation.eulerAngles.x, tempShpagin.transform.rotation.eulerAngles.y, Mathf.Atan2(this.transform.position.y - tempShpagin.transform.position.y, this.transform.position.x - tempShpagin.transform.position.x) * Mathf.Rad2Deg);//- 90);
+           
+            if (tempShpagin.transform.position.x >= this.gameObject.transform.position.x)
             {
+                tempShpagin.gameObject.transform.localScale = new Vector3(-2f, 2, 2);
+                tempShpagin.transform.rotation = Quaternion.Euler(tempShpagin.transform.rotation.eulerAngles.x, tempShpagin.transform.rotation.eulerAngles.y, Mathf.Atan2(this.transform.position.y - tempShpagin.transform.position.y, this.transform.position.x - tempShpagin.transform.position.x) * Mathf.Rad2Deg - 180);
+            }
+            else
+            {
+                tempShpagin.transform.rotation = Quaternion.Euler(tempShpagin.transform.rotation.eulerAngles.x, tempShpagin.transform.rotation.eulerAngles.y, Mathf.Atan2(this.transform.position.y - tempShpagin.transform.position.y, this.transform.position.x - tempShpagin.transform.position.x) * Mathf.Rad2Deg);
+            }
+            tempShpagin.transform.SetParent(activeBattleUnitTransform);
+
+
+
+            if (tempShpagin == null)
+            Debug.Log("shpagina NETY");
+
+            ShpaginBehaviour shpaginScript = tempShpagin.GetComponent<ShpaginBehaviour>();
+            shpaginScript.aim = this.gameObject;
+
+
+
+            if (damage >= u.maxHP * (u.quantity-1) + u.HP)
+            {
+                shpaginScript.aimUnit = u;
+                shpaginScript.gonnaDestroy = true; //Теперь шпагин его сам расстреляет
                 Debug.Log("Уничтожили его");
 
 
                 //ЗДЕСЬ НАЧИНАЕТСЯ УНИЧТОЖЕНИЕ ПРОТИВНИКА
+                /*
                 Animator cardAnimator;
                 u.quantity = 0;
                 for(int i =0; i< 4; i++)
@@ -146,13 +176,15 @@ public class BattleCardBehaviour : MonoBehaviour, IPointerEnterHandler, IPointer
                         //this.DestroyThis();
                         break;
                     }
-                }
+                }*/
                
 
                 //ЗДЕСЬ ЗАКАНЧИВАЕТСЯ УНИЧТОЖЕНИЕ
             }
             else 
             {
+
+                shpaginScript.gonnaDestroy = false;
                 Debug.Log("Наносим ему урон");
                 while (damage > u.maxHP && u.quantity > 1)
                 {
