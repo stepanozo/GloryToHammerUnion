@@ -219,6 +219,8 @@ public class GameMainScript : MonoBehaviour
             BaseOfUnitsSC.AddUnit(new unit(name: "Солдат СКСМ", damage: 4, hP: 3, maxHP: 3, techDamage: 4, spritePath: "Спрайты\\Illustrations\\Солдаты СКСМ", description: "Здоровье: 25/50\tУрон: 25\tУрон по технике: 25\tКол-во: 25\r\nЭкипаж: 10\r\nСпособность: загружает в себя 10 юнитов-солдат или выгружает весь свой экипаж, который сразу же получает возможность атаковать\r\n", quantity: 4), BaseOfUnitsSC.RezervUnits);
             BaseOfUnitsSC.AddUnit(new unit(name: "БТР", damage: 10, hP: 50, maxHP: 50, techDamage: 10, spritePath: "Спрайты\\Illustrations\\БТР колонна", description: "Способность: загружает в себя 10 юнитов-солдат или выгружает весь свой экипаж, который сразу же получает возможность атаковать\r\n", quantity: 2), BaseOfUnitsSC.RezervUnits);
             BaseOfUnitsSC.AddUnit(new unit(name: "Солдат СКСМ", damage: 4, hP: 3, maxHP: 3, techDamage: 4, spritePath: "Спрайты\\Illustrations\\Солдаты СКСМ", description: "ASD", quantity: 2), BaseOfUnitsSC.RezervUnits);
+            BaseOfUnitsSC.AddUnit(new unit(name: "Тестовый юнит 1", damage: 10, hP: 50, maxHP: 50, techDamage: 10, spritePath: "Спрайты\\Illustrations\\БТР колонна", description: "Способность: загружает в себя 10 юнитов-солдат или выгружает весь свой экипаж, который сразу же получает возможность атаковать\r\n", quantity: 2), BaseOfUnitsSC.RezervUnits);
+            BaseOfUnitsSC.AddUnit(new unit(name: "Тестовый юнит 2", damage: 4, hP: 3, maxHP: 3, techDamage: 4, spritePath: "Спрайты\\Illustrations\\Солдаты СКСМ", description: "ASD", quantity: 2), BaseOfUnitsSC.RezervUnits);
             //BaseOfUnitsSC.RefreshRezerv();
 
         }
@@ -658,13 +660,27 @@ public class GameMainScript : MonoBehaviour
         LetterName.text = "Последствия";
     }
 
-    public void NextDayClick()
+
+    /// <summary>
+    /// После всех анимаций атаки эта функция продолжит запуск следующего дня
+    /// </summary>
+    public void ContinueNextDay()
     {
-
+        BaseOfUnitsSC.enemyTurn = false;
         SoundSource.PlayOneShot(ClockSound);
-        //ПИСЬМА
 
-        UpdateConsequences();
+        //Здесь все юниты становятся везде активными
+        foreach (string key in MapSC.battlePointsDict.Keys)
+        {
+
+            foreach (unit u in MapSC.battlePointsDict[key].fightEnemyUnits)
+            {
+                Debug.Log("Сейчас ключ " + key);
+                u.isActive = true;
+            }
+            foreach (unit u in MapSC.battlePointsDict[key].fightAllyUnits)
+                u.isActive = true;
+        }
 
 
 
@@ -720,9 +736,44 @@ public class GameMainScript : MonoBehaviour
 
         }
 
-      
+
 
         NewDayProcedures(); //Здесь все процедуры, которые так же можно применять и в воскресенье.
+    }
+
+    public void NextDayClick()
+    {
+
+      
+        //ПИСЬМА
+
+        UpdateConsequences();
+
+
+        //Убираем здесь дела
+        delo1Animator.SetInteger("Condition", 1);
+        delo2Animator.SetInteger("Condition", 1);
+        //Здесь покажем игроку все атаки врагов во всех боевых точках
+        // foreach(string key in MapSC.battlePointsDict.Keys)
+
+        //Здесь делаем активными всех юнитов во всех боевых точках, но сначала проведём вражеские атаки.
+        BaseOfUnitsSC.enemyTurn = true;
+        bool noBattles = true;
+        foreach (string key in MapSC.battlePointsDict.Keys)
+        {
+            if (MapSC.battlePointsDict[key].fightEnemyUnits.Count > 0 && MapSC.battlePointsDict[key].fightAllyUnits.Count > 0)
+            {
+                noBattles = false;
+                MapSC.activeBattlePointTag = key;
+                BaseOfUnitsSC.ToTheBattle();
+                break;
+            }
+
+        }
+        if (noBattles)
+            ContinueNextDay();
+
+      
 
 
     }

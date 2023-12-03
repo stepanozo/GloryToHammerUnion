@@ -18,6 +18,8 @@ namespace Assembly_CSharp
         public string description;
         public int quantity;
         public bool isTech;
+        public bool isActive;
+        public bool isEnemy;
 
 
         public static unit Copy(unit u)
@@ -25,7 +27,7 @@ namespace Assembly_CSharp
             return new unit(name: u.name, damage: u.damage, techDamage: u.techDamage, hP: u.HP, maxHP: u.maxHP, spritePath: u.spritePath, description: u.description, quantity: u.quantity, isTech: u.isTech = false);
         }
 
-        public unit(string name, int damage, int techDamage, int hP, int maxHP, string spritePath, string description, int quantity, bool isTech = false)
+        public unit(string name, int damage, int techDamage, int hP, int maxHP, string spritePath, string description, int quantity, bool isTech = false, bool isEnemy = false, bool isActive = false)
         {
             this.name = name;
             this.damage = damage;
@@ -36,6 +38,8 @@ namespace Assembly_CSharp
             this.description = description;
             this.quantity = quantity;
             this.isTech = isTech;
+            this.isActive = isActive;
+            this.isEnemy = isEnemy;
         }
     }
 }

@@ -75,9 +75,13 @@ public class BaseOfUnits : MonoBehaviour
     private BattleCardBehaviour BattleCardScript;
     public unit ActiveReservUnit;
 
+    //Ещё что-то
+    public GameObject nameOfBattlePoint;
+    public bool enemyTurn;
+
     private void Start()
     {
-
+        enemyTurn = false;
         gonnaAttack = false;
         GameSC = GameObject.Find("GameplaySystem").GetComponent<GameMainScript>(); //мб это надо удалить, всё как-то и без него работает
         BattleUnitObjectsAlly = new GameObject[4];
@@ -423,6 +427,8 @@ public class BaseOfUnits : MonoBehaviour
         ButtleReservAnimator.SetBool("RezervOpened", true);
         RefreshRezerv(battle: true); //Обновить резерв именно битвы, а не обычный резерв
         RefreshBattle(GameMainScript.MapSC.activeBattlePointTag);
+        nameOfBattlePoint.GetComponent<Animator>().SetBool("Shown", true);
+        nameOfBattlePoint.GetComponent<Text>().text = GameMainScript.MapSC.battlePointsDict[GameMainScript.MapSC.activeBattlePointTag].name;
     }
 
     public void exitBattle()
@@ -470,6 +476,8 @@ public class BaseOfUnits : MonoBehaviour
                 cardAnimator.SetBool("GoesToTop", true);
             }
         }
+
+        nameOfBattlePoint.GetComponent<Animator>().SetBool("Shown", false);
 
     }
 

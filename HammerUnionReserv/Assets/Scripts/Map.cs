@@ -158,6 +158,8 @@ internal class Map : MonoBehaviour
 
         //Создаём объекты значков-ресурсов, требуемых для постройки зданий
         //requiredRecourseBuilding reqRec1 = new requiredRecourseBuilding();
+        if (SLscript.isNewGame)
+            InitializeBattlePoints();
     }
 
 

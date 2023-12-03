@@ -22,6 +22,7 @@ public class BattleCardBehaviour : MonoBehaviour, IPointerEnterHandler, IPointer
     public float v;
     public float countTime;
 
+
     public static unit activeBattleUnit;
     public static Transform activeBattleUnitTransform;
 
@@ -99,7 +100,10 @@ public class BattleCardBehaviour : MonoBehaviour, IPointerEnterHandler, IPointer
             GameMainScript.BaseOfUnitsSC.BigUnitDescription.text = u.description;
 
             GameMainScript.BaseOfUnitsSC.buttonAbility.SetActive(true);
-            GameMainScript.BaseOfUnitsSC.buttonAttack.SetActive(true);
+            if(u.isActive)
+                GameMainScript.BaseOfUnitsSC.buttonAttack.SetActive(true);
+            else
+                GameMainScript.BaseOfUnitsSC.buttonAttack.SetActive(false);
             GameMainScript.BaseOfUnitsSC.buttonRetreat.SetActive(true);
             GameMainScript.BaseOfUnitsSC.buttonPlayIt.SetActive(false);
 
@@ -108,109 +112,125 @@ public class BattleCardBehaviour : MonoBehaviour, IPointerEnterHandler, IPointer
         }
         else //Если атакуем юнита
         {
-            Debug.Log("Атакуем его");
-            int damage = u.isTech ? activeBattleUnit.techDamage : activeBattleUnit.damage;
-            damage *= activeBattleUnit.quantity;
-            Debug.Log("Умножаем дамаг юнита на " + activeBattleUnit.quantity);
 
-            GameObject tempShpagin = Instantiate(GameMainScript.BaseOfUnitsSC.ShpaginPrefab, activeBattleUnitTransform.position, Quaternion.identity, GameObject.Find("Юниты союзники").transform);//спавним на ту карточку которая и атакует.
-            //tempShpagin.transform.rotation = Quaternion.Euler(tempShpagin.transform.rotation.eulerAngles.x, tempShpagin.transform.rotation.eulerAngles.y, Mathf.Atan2(this.transform.position.y - tempShpagin.transform.position.y, this.transform.position.x - tempShpagin.transform.position.x) * Mathf.Rad2Deg);//- 90);
-           
-            if (tempShpagin.transform.position.x >= this.gameObject.transform.position.x)
-            {
-                tempShpagin.gameObject.transform.localScale = new Vector3(-2f, 2, 2);
-                tempShpagin.transform.rotation = Quaternion.Euler(tempShpagin.transform.rotation.eulerAngles.x, tempShpagin.transform.rotation.eulerAngles.y, Mathf.Atan2(this.transform.position.y - tempShpagin.transform.position.y, this.transform.position.x - tempShpagin.transform.position.x) * Mathf.Rad2Deg - 180);
-            }
-            else
-            {
-                tempShpagin.transform.rotation = Quaternion.Euler(tempShpagin.transform.rotation.eulerAngles.x, tempShpagin.transform.rotation.eulerAngles.y, Mathf.Atan2(this.transform.position.y - tempShpagin.transform.position.y, this.transform.position.x - tempShpagin.transform.position.x) * Mathf.Rad2Deg);
-            }
-            tempShpagin.transform.SetParent(activeBattleUnitTransform);
+            attackUnit();
+            
 
 
-
-            if (tempShpagin == null)
-            Debug.Log("shpagina NETY");
-
-            ShpaginBehaviour shpaginScript = tempShpagin.GetComponent<ShpaginBehaviour>();
-            shpaginScript.aim = this.gameObject;
-
-
-
-            if (damage >= u.maxHP * (u.quantity-1) + u.HP)
-            {
-                shpaginScript.aimUnit = u;
-                shpaginScript.gonnaDestroy = true; //Теперь шпагин его сам расстреляет
-                Debug.Log("Уничтожили его");
-
-
-                //ЗДЕСЬ НАЧИНАЕТСЯ УНИЧТОЖЕНИЕ ПРОТИВНИКА
-                /*
-                Animator cardAnimator;
-                u.quantity = 0;
-                for(int i =0; i< 4; i++)
-                {
-                    if (GameMainScript.MapSC.VillageDict[GameMainScript.MapSC.activeVillageTag].fightEnemyUnits[i].quantity <= 0) //ищем этого юнита, у которого кончилось кол-во
-                    {
-                        Debug.Log("Убрали противника"); ;
-                        cardAnimator = GameMainScript.BaseOfUnitsSC.BattleUnitObjectsEnemy[i].GetComponent<Animator>();
-                        cardAnimator.SetBool("GoesToTop", true);
-                        GameMainScript.MapSC.VillageDict[GameMainScript.MapSC.activeVillageTag].fightEnemyUnits.RemoveAt(i); //это раньше было внизу, после цикла
-                       
-                        int j = i;
-                        while (j + 1 < 4)
-                        {
-                            GameMainScript.BaseOfUnitsSC.BattleUnitObjectsEnemy[j] = GameMainScript.BaseOfUnitsSC.BattleUnitObjectsEnemy[j + 1];
-                            j++;
-                        }
-
-                        GameMainScript.BaseOfUnitsSC.moveUnitsLeft(GameMainScript.MapSC.activeVillageTag,
-                  GameMainScript.MapSC.VillageDict[GameMainScript.MapSC.activeVillageTag].fightAllyUnits.Count,
-                  GameMainScript.MapSC.VillageDict[GameMainScript.MapSC.activeVillageTag].fightEnemyUnits.Count);
-
-                        //GameMainScript.BaseOfUnitsSC.BattleUnitObjectsEnemy[j + 1] = null;
-
-                        Debug.Log(GameMainScript.MapSC.VillageDict[GameMainScript.MapSC.activeVillageTag].fightEnemyUnits.Count + " - именно столько врагов осталось в этой деревне");
-                        //GameMainScript.BaseOfUnitsSC.moveUnitsLeft()
-
-                        //this.DestroyThis();
-                        break;
-                    }
-                }*/
-               
-
-                //ЗДЕСЬ ЗАКАНЧИВАЕТСЯ УНИЧТОЖЕНИЕ
-            }
-            else 
-            {
-
-                shpaginScript.gonnaDestroy = false;
-                Debug.Log("Наносим ему урон");
-                while (damage > u.maxHP && u.quantity > 1)
-                {
-                    u.quantity--;
-                    damage -= u.maxHP;
-                }
-                if(damage >= u.HP)
-                {
-                    u.quantity--;
-                    damage -= u.HP;
-                    u.HP = u.maxHP - damage;
-                }
-                else
-                    u.HP -= damage;
-
-                //if(u.HP<0)
-                //if(u.HP <0)
-
-                GameMainScript.BaseOfUnitsSC.RefreshAllQuantities(); //тут обновляем всё здоровье и кол-во всех юнитов
-                
-
-            }
             GameMainScript.BaseOfUnitsSC.gonnaAttack = false;
+
+
+            //Делаем юнита неактивным и скрываем ему кнопку атаки до следующего дня.
+            activeBattleUnit.isActive = false;
+            GameMainScript.BaseOfUnitsSC.buttonAttack.SetActive(false);
+
         }
     }
 
+    public void attackUnit()
+    {
+        Debug.Log("Атакуем его");
+        int damage = u.isTech ? activeBattleUnit.techDamage : activeBattleUnit.damage;
+        damage *= activeBattleUnit.quantity;
+        Debug.Log("Умножаем дамаг юнита на " + activeBattleUnit.quantity);
+
+        Debug.Log("Активный юнит сейчас " + activeBattleUnit.name);
+        GameObject tempShpagin = Instantiate(GameMainScript.BaseOfUnitsSC.ShpaginPrefab, activeBattleUnitTransform.position, Quaternion.identity, GameObject.Find("Юниты союзники").transform);//спавним на ту карточку которая и атакует.
+                                                                                                                                                                                               //tempShpagin.transform.rotation = Quaternion.Euler(tempShpagin.transform.rotation.eulerAngles.x, tempShpagin.transform.rotation.eulerAngles.y, Mathf.Atan2(this.transform.position.y - tempShpagin.transform.position.y, this.transform.position.x - tempShpagin.transform.position.x) * Mathf.Rad2Deg);//- 90);
+
+        if (tempShpagin.transform.position.x >= this.gameObject.transform.position.x)
+        {
+            tempShpagin.gameObject.transform.localScale = new Vector3(-2f, 2, 2);
+            tempShpagin.transform.rotation = Quaternion.Euler(tempShpagin.transform.rotation.eulerAngles.x, tempShpagin.transform.rotation.eulerAngles.y, Mathf.Atan2(this.transform.position.y - tempShpagin.transform.position.y, this.transform.position.x - tempShpagin.transform.position.x) * Mathf.Rad2Deg - 180);
+        }
+        else
+        {
+            tempShpagin.transform.rotation = Quaternion.Euler(tempShpagin.transform.rotation.eulerAngles.x, tempShpagin.transform.rotation.eulerAngles.y, Mathf.Atan2(this.transform.position.y - tempShpagin.transform.position.y, this.transform.position.x - tempShpagin.transform.position.x) * Mathf.Rad2Deg);
+        }
+        tempShpagin.transform.SetParent(activeBattleUnitTransform);
+
+
+
+        if (tempShpagin == null)
+            Debug.Log("shpagina NETY");
+
+        ShpaginBehaviour shpaginScript = tempShpagin.GetComponent<ShpaginBehaviour>();
+        shpaginScript.aim = this.gameObject;
+
+
+
+        if (damage >= u.maxHP * (u.quantity - 1) + u.HP)
+        {
+            shpaginScript.aimUnit = u;
+            shpaginScript.gonnaDestroy = true; //Теперь шпагин его сам расстреляет
+            Debug.Log("Уничтожили его");
+
+
+            //ЗДЕСЬ НАЧИНАЕТСЯ УНИЧТОЖЕНИЕ ПРОТИВНИКА
+            /*
+            Animator cardAnimator;
+            u.quantity = 0;
+            for(int i =0; i< 4; i++)
+            {
+                if (GameMainScript.MapSC.VillageDict[GameMainScript.MapSC.activeVillageTag].fightEnemyUnits[i].quantity <= 0) //ищем этого юнита, у которого кончилось кол-во
+                {
+                    Debug.Log("Убрали противника"); ;
+                    cardAnimator = GameMainScript.BaseOfUnitsSC.BattleUnitObjectsEnemy[i].GetComponent<Animator>();
+                    cardAnimator.SetBool("GoesToTop", true);
+                    GameMainScript.MapSC.VillageDict[GameMainScript.MapSC.activeVillageTag].fightEnemyUnits.RemoveAt(i); //это раньше было внизу, после цикла
+
+                    int j = i;
+                    while (j + 1 < 4)
+                    {
+                        GameMainScript.BaseOfUnitsSC.BattleUnitObjectsEnemy[j] = GameMainScript.BaseOfUnitsSC.BattleUnitObjectsEnemy[j + 1];
+                        j++;
+                    }
+
+                    GameMainScript.BaseOfUnitsSC.moveUnitsLeft(GameMainScript.MapSC.activeVillageTag,
+              GameMainScript.MapSC.VillageDict[GameMainScript.MapSC.activeVillageTag].fightAllyUnits.Count,
+              GameMainScript.MapSC.VillageDict[GameMainScript.MapSC.activeVillageTag].fightEnemyUnits.Count);
+
+                    //GameMainScript.BaseOfUnitsSC.BattleUnitObjectsEnemy[j + 1] = null;
+
+                    Debug.Log(GameMainScript.MapSC.VillageDict[GameMainScript.MapSC.activeVillageTag].fightEnemyUnits.Count + " - именно столько врагов осталось в этой деревне");
+                    //GameMainScript.BaseOfUnitsSC.moveUnitsLeft()
+
+                    //this.DestroyThis();
+                    break;
+                }
+            }*/
+
+
+            //ЗДЕСЬ ЗАКАНЧИВАЕТСЯ УНИЧТОЖЕНИЕ
+        }
+        else
+        {
+
+            shpaginScript.gonnaDestroy = false;
+            Debug.Log("Наносим ему урон");
+            while (damage > u.maxHP && u.quantity > 1)
+            {
+                u.quantity--;
+                damage -= u.maxHP;
+            }
+            if (damage >= u.HP)
+            {
+                u.quantity--;
+                damage -= u.HP;
+                u.HP = u.maxHP - damage;
+            }
+            else
+                u.HP -= damage;
+
+            //if(u.HP<0)
+            //if(u.HP <0)
+
+            GameMainScript.BaseOfUnitsSC.RefreshAllQuantities(); //тут обновляем всё здоровье и кол-во всех юнитов
+
+
+        }
+        activeBattleUnit.isActive = false;
+    }
 
     public void DestroyThis()
     {
